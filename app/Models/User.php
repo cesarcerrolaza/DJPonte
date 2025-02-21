@@ -29,6 +29,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -52,6 +53,28 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    //------------------RELACIONES------------------//
+
+    // Sesiones DJ creadas por el usuario dj
+    public function djsessions()
+    {
+        return $this->hasMany(Djsession::class);
+    }
+
+    // Sesion a la que se ha unido el usuario
+    public function joinedDjsession()
+    {
+        return $this->belongsTo(Djsession::class);
+    }
+
+    // Cuentas de redes sociales asociadas al usuario
+    public function socialUsers()
+    {
+        return $this->hasMany(SocialAccount::class);
+    }
+
+    //------------------METODOS------------------//
+
     /**
      * Get the attributes that should be cast.
      *
@@ -64,4 +87,6 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    //------------------EVENTOS------------------//
 }

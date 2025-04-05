@@ -16,9 +16,12 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->string('description')->nullable();
+            $table->string('venue');
+            $table->string('address')->nullable();
+            $table->string('city')->nullable();
             $table->string('image')->nullable();
             $table->boolean('active')->default(true);
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
             $table->unsignedInteger('current_users')->default(0);

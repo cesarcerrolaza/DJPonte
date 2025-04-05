@@ -62,9 +62,9 @@ class User extends Authenticatable
     }
 
     // Sesion a la que se ha unido el usuario
-    public function joinedDjsession()
+    public function djsessionActive()
     {
-        return $this->belongsTo(Djsession::class);
+        return $this->belongsTo(Djsession::class, 'djsession_id');
     }
 
     // Cuentas de redes sociales asociadas al usuario

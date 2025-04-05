@@ -56,6 +56,13 @@ class Djsession extends Model
         //$this->songRequests()->create($song); TODO: Implementar
     }
 
+    //Concatenación de localizacion
+    public function fullLocation()
+    {
+        return $this->venue . ', ' . $this->address . ', ' . $this->city;
+    }
+
+
 
 
 

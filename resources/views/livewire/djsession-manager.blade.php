@@ -1,0 +1,105 @@
+<div class="container mx-auto px-4 py-6 max-w-6xl">
+    <!-- Header Section with Improved Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+        <!-- Left Side: Venue and Session Info -->
+        <div class="md:col-span-2 flex items-center space-x-6">
+            <!-- Venue Image with Enhanced Styling -->
+            <div class="flex-shrink-0">
+                <img 
+                    src="{{ asset($djsession->image) }}" 
+                    alt="Imagen Djsession" 
+                    class="w-32 h-32 md:w-40 md:h-40 object-cover rounded-xl shadow-lg ring-4 ring-purple-100"
+                >
+            </div>
+
+            <!-- Session Details -->
+            <div>
+                <h1 class="text-3xl md:text-4xl font-black text-gray-800 mb-2">
+                    Sesión <br>
+                    <span class="text-purple-600">{{ $djsession->name }}</span>
+                </h1>
+                
+                <!-- Location with Icon -->
+                <p class="mt-2 text-purple-600 font-semibold text-sm flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 12.414a2 2 0 00-2.828 0l-4.243 4.243m0 0L5.636 18.364a9 9 0 1112.728 0l-1.414-1.414z" />
+                    </svg>
+                    {{ $address }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Side: Session Metadata -->
+        <div class="flex flex-col items-end space-y-3">
+            <!-- Session Code with Modern Design -->
+            <div class="bg-gray-100 rounded-full px-4 py-1 text-gray-600">
+                <span class="font-bold text-2xl">#{{ $djsession->code }}</span>
+            </div>
+
+            <!-- Participants with Icon -->
+            <div class="flex items-center text-gray-700 space-x-2">
+                <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.5 17.5a5.5 5.5 0 11-11 0 5.5 5.5 0 0111 0z" />
+                </svg>
+                <span class="font-semibold">{{ $djsession->current_users }} Participantes</span>
+            </div>
+
+            <!-- Exit Button with Improved Design -->
+            <a 
+                href="{{ $exitUrl ?? '#' }}" 
+                class="bg-red-500 hover:bg-red-600 text-white font-bold text-sm px-4 py-2 rounded-lg flex items-center space-x-2 group"
+            >
+                <span>Salir</span>
+                <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L11 12.586V5a1 1 0 10-2 0v7.586l-2.293-2.293a1 1 0 00-1.414 1.414l4 4z" clip-rule="evenodd" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabs Navigation with Enhanced Interactivity -->
+    <div class="mt-8 border-b border-gray-200">
+        <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+            <button 
+                wire:click="$set('activeTab', 'canciones')" 
+                class="py-3 px-1 {{ $activeTab === 'canciones' ? 'border-b-2 border-purple-500 text-purple-600' : 'text-gray-500 hover:text-purple-600' }} font-semibold transition-colors duration-300 flex items-center"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                </svg>
+                Canciones
+            </button>
+
+            <button 
+                wire:click="$set('activeTab', 'propinas')" 
+                class="py-3 px-1 {{ $activeTab === 'propinas' ? 'border-b-2 border-yellow-500 text-yellow-600' : 'text-gray-500 hover:text-yellow-600' }} font-semibold transition-colors duration-300 flex items-center"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Propinas
+            </button>
+
+            <button 
+                wire:click="$set('activeTab', 'sorteos')" 
+                class="py-3 px-1 {{ $activeTab === 'sorteos' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500 hover:text-pink-600' }} font-semibold transition-colors duration-300 flex items-center"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+                Sorteos
+            </button>
+        </nav>
+    </div>
+
+    <!-- Dynamic Content Area with Smooth Transition -->
+    <div class="mt-6 transition-all duration-300 ease-in-out">
+        @if ($activeTab === 'canciones')
+            <livewire:song-requests :djsessionId="$djsession->id"/>
+        @elseif ($activeTab === 'propinas')
+            <livewire:session-tips :djsessionId="$djsession->id" />
+        @elseif ($activeTab === 'sorteos')
+            <livewire:session-lotteries :djsessionId="$djsession->id" />
+        @endif
+    </div>
+</div>

@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('social_post_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('social_post_id')->constrained();
-            $table->foreignId('user_social_id')->constrained()->nullable();
+            $table->foreignId('social_post_id')->constrained()->onDelete('cascade');
+            $table->bigInteger('social_user_id')->unsigned()->nullable();
+            $table->foreign('social_user_id')->references('id')->on('social_users')->onDelete('set null');
             $table->string('media_id');
             $table->timestamps();
         });

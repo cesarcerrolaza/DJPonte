@@ -20,22 +20,20 @@
     <body class="font-sans antialiased">
         <x-banner />
 
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @livewire('navigation-menu')
+        <div class="flex flex-col min-h-screen">
 
             <!-- Page Heading -->
-            @if (isset($header))
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endif
-
+            @include('layouts.partials_.header')
+            <!-- Contenedor de contenido (sidebar + contenido principal) -->
+            <div class="flex flex-1">
+                @include('layouts.partials_.sidebar')
+                <!-- Contenido principal -->
+                <div class="flex-1 p-6 bg-gray-100">
+                    <!-- Aquí iría el contenido principal de tu aplicación -->
+                    @yield('content')
+                </div>
+            </div>
             <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
         </div>
 
         @stack('modals')

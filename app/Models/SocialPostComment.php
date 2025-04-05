@@ -9,7 +9,7 @@ class SocialPostComment extends Model
     //
     protected $fillable = [
         'social_post_id',
-        'user_social_id',
+        'social_user_id',
         'media_id'
     ];
 

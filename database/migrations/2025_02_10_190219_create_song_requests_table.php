@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('song_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('song_id')->constrained();
-            $table->foreignId('djsession_id')->constrained();
+            $table->bigInteger('song_id')->unsigned()->nullable();
+            $table->foreign('song_id')->references('id')->on('songs')->onDelete('set null');
+            $table->foreignId('djsession_id')->constrained()->onDelete('cascade');
             $table->string('custom_title')->nullable();
             $table->string('custom_artist')->nullable();
             $table->float('score')->default(0);
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('songs');
+        Schema::dropIfExists('song_requests');
     }
 };

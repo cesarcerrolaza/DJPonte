@@ -30,6 +30,24 @@ class SocialUser extends Model
 
     //------------------METODOS------------------//
 
+    public static function connectToDjSession($username, $djsessionId, $platform)
+    {
+        $socialUser = self::where('username', $username)
+            ->where('platform', $platform)
+            ->first();
+        if ($socialUser) {
+            $socialUser->djsession_id = $djsessionId;
+        } else {
+            $socialUser = new SocialUser([
+                'username' => $username,
+                'platform' => $platform,
+                'djsession_id' => $djsessionId
+            ]);
+        }
+        $socialUser->save();
+        return $socialUser;
+    }
+
 
     //------------------EVENTOS------------------//
 

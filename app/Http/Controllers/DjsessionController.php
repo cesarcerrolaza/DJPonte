@@ -16,10 +16,10 @@ class DjsessionController extends Controller
 
     public function index(Request $request)
     {
-        //$user = $request->user();
-        $user = User::find(1);
+        $user = $request->user();
         $djName = null;
         $djAvatar = null;
+
         if ($user->role === 'dj') {
             $djsessionActive = $user->djsessionActive;
             $dj = $user;

@@ -47,9 +47,9 @@
             Salir
             <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6v4l5-5-5-5v4z"/></svg>
         </button>
-        <div class="text-sm text-black mt-4 flex items-center" wire:poll.5s>
+        <div class="text-sm text-black mt-4 flex items-center">
             <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6v4l5-5-5-5v4z"/></svg>
-            {{ $djsession->current_participants }} Participantes
+            {{ $djsession->current_users }} Participantes
         </div>
     </div>
 </div>

@@ -25,8 +25,8 @@ class DjsessionSeeder extends Seeder
             'active' => true,
             'start_time' => now(),
             'end_time' => now()->addHours(2),
-            'current_users' => 0,
-            'peak_users' => 0,
+            'current_users' => 1,
+            'peak_users' => 1,
             'user_id' => $dj->id,
         ]);
 

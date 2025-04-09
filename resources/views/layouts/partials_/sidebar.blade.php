@@ -53,10 +53,21 @@
     </nav>
     
     <!-- Botón para cerrar sesión en la parte inferior -->
-    <a href="/logout" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 mt-auto">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
-        <span>Cerrar Sesión</span>
-    </a>
+    <form method="POST" action="{{ route('logout') }}" x-data>
+        @csrf
+        <x-dropdown-link href="{{ route('logout') }}"
+                        @click.prevent="$root.submit()"
+                        class="flex items-center gap-2 text-red-500 hover:text-red-600 transition">
+            <!-- Icono -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+
+            <!-- Texto -->
+            {{ __('Cerrar sesión') }}
+        </x-dropdown-link>
+    </form>
+
+
+
 </div>

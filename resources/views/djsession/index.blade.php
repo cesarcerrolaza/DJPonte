@@ -34,7 +34,8 @@
                 'djName' => $djName,
                 'djAvatar' => $djAvatar,
                 'role' => $role
-            ]) //
+            ])
+            <br>
         @else
             <div class="flex justify-center">
                 <h1 class="text-2xl font-bold">No hay sesiones activas</h1>

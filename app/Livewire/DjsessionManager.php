@@ -4,15 +4,20 @@ namespace App\Livewire;
 
 use App\Models\Djsession;
 use App\Models\SongRequest;
+use App\Services\DjsessionService;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Log;
 
 class DjSessionManager extends Component
 {
 
     //Sesion
     public $djsession;
-
-    public $address = "Direccion"; //TODO
+    public $djsessionId;
+    public $location;
+    public $dj;
+    public $confirmingSessionDeletion = false;
 
 
     //Own
@@ -20,14 +25,12 @@ class DjSessionManager extends Component
     public $activeTab = 'canciones';
 
 
-    protected $listeners = [
-        'updateParticipants' => 'updateParticipantsCount'
-    ];
-
-    public function mount($djsessionId)
+    public function mount(Djsession $djsession)
     {
-
-        $this->djsession = Djsession::find($djsessionId);
+        $this->dj = $djsession->dj;
+        $this->djsession = $djsession;
+        $this->djsessionId = $djsession->id;
+        $this->location = $djsession->fullLocation();
     }
 
     public function changeTab($tab)
@@ -35,22 +38,41 @@ class DjSessionManager extends Component
         $this->activeTab = $tab;
     }
 
-    public function updateParticipantsCount($participants)
+    public function toggleStatus()
     {
-        $this->djsession->participants = $participants;
+        if (!$this->djsession->active) {
+            app(DjsessionService::class)->activate($this->djsession, $this->dj);
+        } else {
+            app(DjsessionService::class)->deactivate($this->djsession);
+        }
     }
 
-
-    public function newParticipantJoined()
+    #[On('echo:djsession.{djsessionId},DjsessionUpdate')]
+    public function djsessionUpdate($eventData)
     {
-        $this->djsession->participants+=1;
+        Log::info('Djsession update event received', ['eventData' => $eventData]);
+        if (!isset($eventData['active']) && !isset($eventData['current_users'])) {
+            $this->djsession = Djsession::find($eventData['djsession_id']);
+            $this->location = $this->djsession->fullLocation();
+            
+        }
+        else {
+            if (isset($eventData['current_users'])) {
+                $this->djsession->current_users = $eventData['current_users'];
+            }
+            if (isset($eventData['active'])){
+                $this->djsession->active = $eventData['active'];
+            }
+        }
+        // Actualizar la lista de peticiones
+        //$this->loadRequests($eventData['djsession_id']);
+    }
+    
+    public function confirmDelete()
+    {
+        $this->confirmingSessionDeletion = true;
     }
 
-    public function newParticipantLeft()
-    {
-        $this->djsession->participants-=1;
-    }
- 
 
     public function render()
     {

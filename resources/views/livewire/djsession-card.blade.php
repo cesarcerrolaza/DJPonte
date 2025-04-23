@@ -1,7 +1,13 @@
-<div class="flex items-center justify-between bg-white p-4 rounded-lg shadow-md w-full max-w-5xl mx-auto">
+<div 
+    class="flex items-center justify-between bg-white p-4 rounded-lg shadow-md w-full max-w-5xl mx-auto hover:bg-gray-50 transition-colors duration-200 {{ $role === 'dj' ? 'hover:bg-gray-50 cursor-pointer' : '' }}"
+    @if($role === 'dj') 
+        onclick="window.location='{{ route('djsessions.show', $djsession) }}'" 
+        style="cursor: pointer;" 
+    @endif
+>
     <!-- Imagen del local -->
     <div class="w-28 h-28 rounded overflow-hidden mr-4">
-        <img src="{{ asset($djsession->image) }}" alt="{{ $djsession->name }}" class="object-cover w-full h-full">
+        <img src="{{ $djsession->image_url }}" alt="{{ $djsession->name }}" class="object-cover w-full h-full">
     </div>
     
     <!-- Info principal -->
@@ -17,7 +23,7 @@
             {{ $location }}
         </p>
         
-        @if($role == 'user')
+        @if($showUserOptions)
             <div class="flex items-center mt-2">
                 <img src="{{ asset($djAvatar) }}" alt="{{ $djName }}" class="w-6 h-6 rounded-full mr-2">
                 <span class="text-sm font-semibold">{{ $djName }}</span>
@@ -41,12 +47,18 @@
         @endif
     </div>
     
-    <!-- Botón Salir y participantes -->
+    <!-- Botón Entrar/Salir y participantes -->
     <div class="flex flex-col items-end justify-between h-full ml-4">
-        <button wire:click="exitSession" class="bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-2 rounded flex items-center">
-            Salir
-            <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6v4l5-5-5-5v4z"/></svg>
-        </button>
+    
+        @if($isCurrentDjsession)
+            <x-danger-button wire:click="setCurrent">
+                {{ $role == 'dj' ? 'Desactivar' : 'Salir' }}   
+            </x-danger-button>
+        @else
+            <x-button wire:click="setCurrent" :disabled="$role == 'user' && !$djsession->active">
+                {{ $role == 'dj' ? 'Activar' : 'Unirse' }}
+            </x-button>
+        @endif
         <div class="text-sm text-black mt-4 flex items-center">
             <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6v4l5-5-5-5v4z"/></svg>
             {{ $djsession->current_users }} Participantes

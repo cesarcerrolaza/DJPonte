@@ -9,8 +9,12 @@ class Djsession extends Model
     protected $fillable = [
         'code',
         'name',
-        'description',
+        'image',
         'active',
+        'venue',
+        'address',
+        'city',
+        'description',
         'start_time',
         'end_time'
         ];
@@ -59,12 +63,45 @@ class Djsession extends Model
     //Concatenación de localizacion
     public function fullLocation()
     {
-        return $this->venue . ', ' . $this->address . ', ' . $this->city;
+        $fullLocation = $this->venue;
+        if ($this->address) {
+            $fullLocation .= ', ' . $this->address;
+        }
+        if ($this->city) {
+            $fullLocation .= ', ' . $this->city;
+        }
+        return $fullLocation;
     }
 
+    // Usuario abandona la sesión
+    public function userLeaved()
+    {
+        $this->current_users--;
+        $this->save();
+    }
 
+    // Usuario se une a la sesión
+    public function userJoined()
+    {
+        $this->current_users++;
+        if ($this->current_users > $this->peak_users) {
+            $this->peak_users = $this->max_users;
+        }
+        $this->save();
+    }
 
+    public function getImageUrlAttribute()
+    {
+        if ($this->image) {
+            return asset('storage/' . $this->image);
+        }
+        return asset(Djsession::getDefaultImagePath());
+    }
 
+    public static function getDefaultImagePath()
+    {
+        return 'storage/djsessions/default.jpg';
+    }
 
     //------------------EVENTOS------------------//
 

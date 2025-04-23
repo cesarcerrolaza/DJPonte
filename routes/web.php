@@ -24,9 +24,9 @@ Route::get('/register', function () {
 });
 */
 
-Route::get('/djsession/exit', function () {
+Route::get('/djsessions/exit', function () {
     return view('home');
-})->name('djsession.exit');
+})->name('djsessions.exit');
 
 Route::middleware([
     'auth:sanctum',
@@ -36,10 +36,10 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-    Route::resource('djsessions', \App\Http\Controllers\DjsessionController::class)
-    ->only(['index']);
-    Route::get('/djsession/search', [\App\Http\Controllers\DjsessionController::class, 'search']) 
-        ->name('djsession.search');
+    Route::get('/djsessions',[\App\Http\Controllers\DjsessionController::class, 'index'])
+        ->name('djsessions.index');
+    Route::get('/djsessions/search', [\App\Http\Controllers\DjsessionController::class, 'search']) 
+        ->name('djsessions.search');
 
 });
 
@@ -59,9 +59,9 @@ Route::middleware([
     'verified',
     'role:user'
 ])->group(function () {
-    Route::get('/djsession/join/{id}', [\App\Http\Controllers\DjsessionController::class, 'join'])
-    ->name('djsession.join');
-    Route::get('/djsession/leave/{id}', [\App\Http\Controllers\DjsessionController::class, 'leave'])
-        ->name('djsession.leave');
+    Route::get('/djsessions/join/{djsession}', [\App\Http\Controllers\DjsessionController::class, 'join'])
+    ->name('djsessions.join');
+    Route::get('/djsessions/leave/{djsession}', [\App\Http\Controllers\DjsessionController::class, 'leave'])
+        ->name('djsessions.leave');
 });
  

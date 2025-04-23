@@ -6,7 +6,7 @@
             <!-- Venue Image with Enhanced Styling -->
             <div class="flex-shrink-0">
                 <img 
-                    src="{{ asset($djsession->image) }}" 
+                    src="{{ $djsession->image_url }}" 
                     alt="Imagen Djsession" 
                     class="w-32 h-32 md:w-40 md:h-40 object-cover rounded-xl shadow-lg ring-4 ring-purple-100"
                 >
@@ -24,13 +24,36 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 12.414a2 2 0 00-2.828 0l-4.243 4.243m0 0L5.636 18.364a9 9 0 1112.728 0l-1.414-1.414z" />
                     </svg>
-                    {{ $address }}
+                    {{ $location }}
                 </p>
             </div>
         </div>
 
         <!-- Right Side: Session Metadata -->
         <div class="flex flex-col items-end space-y-3">
+            <x-dropdown width="48">
+                <x-slot name="trigger">
+                    <button class="p-2 rounded-full hover:bg-gray-200 transition">
+                        <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 10a2 2 0 114.001.001A2 2 0 016 10zm4-4a2 2 0 110-4 2 2 0 010 4zm0 12a2 2 0 110-4 2 2 0 010 4z" />
+                        </svg>
+                    </button>
+                </x-slot>
+
+                <x-slot name="content">
+                    <x-dropdown-button wire:click="$set('confirmingSessionDeletion', true)" class="text-red-600 dark:text-red-400">
+                        Eliminar sesión
+                    </x-dropdown-button>
+
+                    <x-dropdown-link :href="route('djsessions.edit', $djsession)">
+                        Editar sesión
+                    </x-dropdown-link>
+
+                    <x-dropdown-button wire:click="copyUrl({{ $djsession->id }})">
+                        Duplicar sesión
+                    </x-dropdown-button>
+                </x-slot>
+            </x-dropdown>
             <!-- Session Code with Modern Design -->
             <div class="bg-gray-100 rounded-full px-4 py-1 text-gray-600">
                 <span class="font-bold text-2xl">#{{ $djsession->code }}</span>
@@ -45,15 +68,17 @@
             </div>
 
             <!-- Exit Button with Improved Design -->
-            <a 
-                href="{{ $exitUrl ?? '#' }}" 
-                class="bg-red-500 hover:bg-red-600 text-white font-bold text-sm px-4 py-2 rounded-lg flex items-center space-x-2 group"
+            <button
+                wire:click="toggleStatus"
+                class="transition-colors font-bold text-sm px-4 py-2 rounded-lg flex items-center space-x-2 group
+                    {{ $djsession->active ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-green-500 hover:bg-green-600 text-white' }}"
             >
-                <span>Salir</span>
+                <span>{{ $djsession->active ? 'Desactivar' : 'Activar' }}</span>
                 <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L11 12.586V5a1 1 0 10-2 0v7.586l-2.293-2.293a1 1 0 00-1.414 1.414l4 4z" clip-rule="evenodd" />
                 </svg>
-            </a>
+            </button>
+
         </div>
     </div>
 
@@ -102,4 +127,27 @@
             <livewire:session-lotteries :djsessionId="$djsession->id" />
         @endif
     </div>
+
+    <x-confirmation-modal wire:model="confirmingSessionDeletion">
+        <x-slot name="title">Eliminar sesión</x-slot>
+
+        <x-slot name="content">
+            ¿Estás seguro de que deseas eliminar esta sesión? Esta acción no se puede deshacer.
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-secondary-button wire:click="$set('confirmingSessionDeletion', false)">
+                Cancelar
+            </x-secondary-button>
+
+            <form action="{{ route('djsessions.destroy', $djsession) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <x-danger-button type="submit">Eliminar</x-danger-button>
+            </form>
+
+        </x-slot>
+        </x-confirmation-modal>
 </div>
+
+

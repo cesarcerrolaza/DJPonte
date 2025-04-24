@@ -8,10 +8,11 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-        server: {
-            https: true,
-        },
-        build: {
-            manifest: true,
-        }
+    server: {
+        https: true,
+    },
+    build: {
+        manifest: true,
+        outDir: 'app/public/build', // Asegúrate de que coincida con donde Laravel está buscando
+    }
 });

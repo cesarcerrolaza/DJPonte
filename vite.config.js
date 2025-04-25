@@ -10,8 +10,5 @@ export default defineConfig({
     ],
     server: {
         https: true,
-    },
-    build: {
-        manifest: true
     }
 });

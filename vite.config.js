@@ -12,7 +12,6 @@ export default defineConfig({
         https: true,
     },
     build: {
-        manifest: true,
-        outDir: 'app/public/build', // Asegúrate de que coincida con donde Laravel está buscando
+        manifest: true
     }
 });

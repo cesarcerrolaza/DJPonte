@@ -32,6 +32,7 @@ class DjsessionRequest extends FormRequest
             'description' => 'nullable|string|max:1000',
             'start_time'  => 'nullable|date',
             'end_time'    => 'nullable|date|after:start_time',
+            'song_request_timeout' => 'nullable|integer|min:0|max:7200',
         ];
         
         // Para la regla 'code', necesitamos verificar si estamos en una actualización

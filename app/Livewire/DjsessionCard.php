@@ -21,6 +21,7 @@ class DjsessionCard extends Component
     public $showUserOptions;
     public $isCurrentDjsession;
     public $djsessionId;
+    public $actionShown = null;
 
 
 
@@ -34,6 +35,7 @@ class DjsessionCard extends Component
         $this->role = $role;
         $this->showUserOptions = $role === 'user';
         $this->isCurrentDjsession = true;
+        $this->actionShown = null;
         /*
         $this->title = 'Sesión Gózalo';
         $this->sessionCode = '26543';
@@ -105,6 +107,25 @@ class DjsessionCard extends Component
         }
         // Actualizar la lista de peticiones
         //$this->loadRequests($eventData['djsession_id']);
+    }
+
+    //
+    public function showAction($type){
+        switch ($type) {
+            case 'song-request':
+                // Lógica para solicitar canciones
+                //$this->emit('openSongRequestModal');
+                $this->actionShown = 'song-request';
+                break;
+            case 'tip':
+                // Lógica para propinas
+                $this->emit('openTipModal');
+                break;
+            case 'raffle':
+                // Lógica para sorteos
+                $this->emit('openRaffleModal');
+                break;
+        }
     }
 
     public function render()

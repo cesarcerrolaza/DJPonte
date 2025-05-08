@@ -25,7 +25,7 @@
         @endif
 
         <!-- Formulario -->
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" onsubmit="localStorage.clear();">
             @csrf
 
             <!-- Email o nombre -->

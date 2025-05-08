@@ -72,7 +72,13 @@ class DjsessionController extends Controller
         }
 
         $data['active'] = isset($data['active']) ? $data['active'] : false;
-    
+
+        if ($request->input('timeout_unit') === 'minutes') {
+            $data['song_request_timeout'] = $data['song_request_timeout'] * 60;
+            if ($data['song_request_timeout'] > 7200) {
+                $data['song_request_timeout'] = 7200;
+            }
+        }
         // Crear la sesión asociada al DJ autenticado
         $session = new Djsession($data);
         $session->user_id = $user->id;
@@ -135,6 +141,13 @@ class DjsessionController extends Controller
             $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
             // Almacenar la imagen en el disco público y obtener la ruta de almacenamiento
             $data['image'] = $request->file('image')->storeAs('djsessions', $imageName, 'public');
+        }
+
+        if ($request->input('timeout_unit') === 'minutes') {
+            $data['song_request_timeout'] = $data['song_request_timeout'] * 60;
+            if ($data['song_request_timeout'] > 7200) {
+                $data['song_request_timeout'] = 7200;
+            }
         }
         
         // Actualizar la sesión

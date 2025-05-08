@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Livewire\Attributes\On;
+
+class DjsessionSummary extends Component
+{
+    public $djsession;
+    public $songRequestsCount;
+    public $topSongsCount = 3;
+    public $topSongRequests;
+    public $tipsCount;
+    public $topTipsCount = 3;
+    public $topTips;
+    public $raffleParticipants;
+    public $lastRaffleParticipant;
+    public $rafflePrize;
+
+
+    public function render()
+    {
+        return view('livewire.djsession-summary');
+    }
+
+    public function mount() {
+        //Sumatorio de todos los count de todos los requests
+        $this->songRequestsCount = $this->djsession->songRequests()->sum('score');
+        $this->topSongRequests = $this->djsession->songRequests()->with('song')
+            ->orderBy('score', 'desc')
+            ->take($this->topSongsCount)
+            ->get()
+            ->map(function ($request) {
+                return [
+                    'id' => $request->id,
+                    'title' => optional($request->song)->title ?? $request->custom_title,
+                    'artist' => optional($request->song)->artist ?? $request->custom_artist,
+                    'score' => $request->score
+                ];
+            })
+            ->toArray();       
+        /*
+        $this->tipsCount = $this->djsession->tips()->count();
+        $this->topTips = $this->djsession->tips()->sortByDesc('total')->take($this->topTipsCount);
+
+        $this->raffleParticipants = $this->djsession->raffle->participants()->count();
+        $this->rafflePrize = $this->djsession->raffle->prize;
+        $this->lastRaffleParticipant = $this->djsession->raffle->participants()->orderBy('created_at', 'desc')->first();
+        */
+    }
+
+    #[On('echo:song-requests,NewSongRequest')]
+    public function addRequest($eventData)
+    {
+
+        // Buscar si la solicitud ya está en la lista por el ID y obtener la clave (índice)
+        $index = collect($this->topSongRequests)->search(fn ($r) => $r['id'] === $eventData['id']);
+
+        $this->songRequestsCount = $this->songRequestsCount + 1;
+
+        if ($index !== false) {
+            // Si ya existe, actualizar el score
+            $this->topSongRequests[$index]['score'] = $eventData['score'];
+            // Reordenar la lista después de añadir o actualizar la petición
+            usort($this->topSongRequests, fn ($a, $b) => $b['score'] <=> $a['score']);
+        } else{
+            // Si no existe, comprobar los score
+            if (count($this->topSongRequests) < $this->topSongsCount) {
+                // Si hay espacio, añadir la nueva petición
+                $this->topSongRequests[] = $eventData;
+            } else {
+                // Si no hay espacio, comprobar si el score es mayor que el menor de los 3 mejores
+                if ($this->topSongRequests[2]['score'] < $eventData['score']) {
+                    // Reemplazar la de menor score
+                    $this->topSongRequests[2] = $eventData;
+                    usort($this->topSongRequests, fn ($a, $b) => $b['score'] <=> $a['score']);
+                }
+            }
+        }
+    }
+
+
+}

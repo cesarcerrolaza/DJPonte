@@ -7,7 +7,6 @@
     <form action="{{ route('djsessions.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
         @csrf
         
-        <!-- Header Section with Improved Layout -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             <!-- Left Side: Venue and Session Info -->
             <div class="md:col-span-2 flex items-center space-x-6">
@@ -80,7 +79,7 @@
                                 id="code"
                                 name="code" 
                                 placeholder="Código"
-                                class="font-bold text-2xl bg-transparent border-b border-gray-300 focus:border-gray-600 focus:outline-none w-40 text-center"
+                                class="font-bold text-2xl bg-transparent border-b border-gray-300 focus:border-gray-600 focus:outline-none w-50 text-center"
                                 required
                             >
                             <button 
@@ -98,13 +97,7 @@
                     </div>
                 </div>
 
-                <!-- Participants with Icon (Read-only) -->
-                <div class="flex items-center text-gray-700 space-x-2">
-                    <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.5 17.5a5.5 5.5 0 11-11 0 5.5 5.5 0 0111 0z" />
-                    </svg>
-                    <span class="font-semibold">0 Participantes</span>
-                </div>
+                <x-request-timeout timeout="20" />
 
                 <!-- Active Status Toggle -->
                 <div class="flex items-center space-x-3">
@@ -118,42 +111,39 @@
             </div>
         </div>
 
-        <!-- Tabs Navigation with Enhanced Interactivity (Static for now) -->
-        <div class="mt-8 border-b border-gray-200">
+        <!-- Tabs Navigation -->
+        <div class="mt-8 border-b border-gray-200" x-data="{ activeTab: 'summary' }">
             <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                <button 
-                    type="button"
-                    class="py-3 px-1 border-b-2 border-purple-500 text-purple-600 font-semibold transition-colors duration-300 flex items-center"
-                >
+                <x-tab-button tab="summary" color="indigo" @click="activeTab = 'summary'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M20.2 7.8l-7.7 7.7-4-4-5.7 5.7"/><path d="M15 7h6v6"/>
+                    </svg>
+                    Resumen
+                </x-tab-button>
+                <x-tab-button tab="songs" color="purple" @click="activeTab = 'songs'">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                     </svg>
                     Canciones
-                </button>
+                </x-tab-button>
 
-                <button 
-                    type="button" 
-                    class="py-3 px-1 text-gray-500 hover:text-yellow-600 font-semibold transition-colors duration-300 flex items-center"
-                >
+                <x-tab-button tab="tips" color="yellow" @click="activeTab = 'tips'">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Propinas
-                </button>
+                </x-tab-button>
 
-                <button 
-                    type="button"
-                    class="py-3 px-1 text-gray-500 hover:text-pink-600 font-semibold transition-colors duration-300 flex items-center"
-                >
+                <x-tab-button tab="raffle" color="pink" @click="activeTab = 'raffle'">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
                     Sorteos
-                </button>
+                </x-tab-button>
             </nav>
         </div>
 
-        <!-- Content Area (Static placeholder for now) -->
+        <!-- Content Area (Empty) -->
         <div class="mt-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <div class="text-center text-gray-500 py-8">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

@@ -33,13 +33,17 @@ class SongRequest extends Model
 
     //------------------METODOS------------------//
 
-    // Crear una nueva petición
+    // Crear una nueva petición desde redes sociales
     public static function createSocialRequest($djsessionId, $comment)
     {
-        //  Obtiene canción y artista del comentario
         $songData = Song::getSongDataFromComment($comment);
 
-        // Crea la petición
+        self::createSongRequest($djsessionId, $songData);
+    }
+
+    // Crear una nueva petición
+    public static function createSongRequest($djsessionId, $songData)
+    {
         if ($songData['songId']) {
             $songRequest = self::where('djsession_id', $djsessionId)
                 ->where('song_id', $songData['songId'])
@@ -81,6 +85,7 @@ class SongRequest extends Model
 
         broadcast(new NewSongRequest($songRequest));
     }
+    
 
     //------------------EVENTOS------------------//
 }

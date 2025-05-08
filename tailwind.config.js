@@ -11,6 +11,12 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
+    safelist: [
+        {
+            pattern: /^(border|text|hover:border|hover:text)-(indigo|yellow|purple|pink)-(500|600)$/,
+        },
+    ],
+
     theme: {
         extend: {
             fontFamily: {

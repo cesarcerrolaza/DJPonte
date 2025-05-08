@@ -82,50 +82,59 @@
         </div>
     </div>
 
-    <!-- Tabs Navigation with Enhanced Interactivity -->
-    <div class="mt-8 border-b border-gray-200">
+    <!-- Tabs Navigation -->
+    <div class="mt-8 border-b border-gray-200" x-data="{ activeTab: 'summary', loaded:{summary: true, songs: false, tips: false, raffle: false} }">
         <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-            <button 
-                wire:click="$set('activeTab', 'canciones')" 
-                class="py-3 px-1 {{ $activeTab === 'canciones' ? 'border-b-2 border-purple-500 text-purple-600' : 'text-gray-500 hover:text-purple-600' }} font-semibold transition-colors duration-300 flex items-center"
-            >
+            <x-tab-button tab="summary" color="indigo" x-on:click="activeTab = 'summary'; loaded.summary = true;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M20.2 7.8l-7.7 7.7-4-4-5.7 5.7"/><path d="M15 7h6v6"/>
+                </svg>
+                Resumen
+            </x-tab-button>
+            <x-tab-button tab="songs" color="purple" x-on:click="activeTab = 'songs'; loaded.songs = true;">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                 </svg>
                 Canciones
-            </button>
-
-            <button 
-                wire:click="$set('activeTab', 'propinas')" 
-                class="py-3 px-1 {{ $activeTab === 'propinas' ? 'border-b-2 border-yellow-500 text-yellow-600' : 'text-gray-500 hover:text-yellow-600' }} font-semibold transition-colors duration-300 flex items-center"
-            >
+            </x-tab-button>
+            <x-tab-button tab="tips" color="yellow" x-on:click="activeTab = 'tips'; loaded.tips = true;">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Propinas
-            </button>
-
-            <button 
-                wire:click="$set('activeTab', 'sorteos')" 
-                class="py-3 px-1 {{ $activeTab === 'sorteos' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500 hover:text-pink-600' }} font-semibold transition-colors duration-300 flex items-center"
-            >
+            </x-tab-button>
+            <x-tab-button tab="raffle" color="pink" x-on:click="activeTab = 'raffle'; loaded.raffle = true;">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                 </svg>
                 Sorteos
-            </button>
+            </x-tab-button>
         </nav>
-    </div>
 
-    <!-- Dynamic Content Area with Smooth Transition -->
-    <div class="mt-6 transition-all duration-300 ease-in-out">
-        @if ($activeTab === 'canciones')
-            <livewire:song-requests :djsessionId="$djsession->id"/>
-        @elseif ($activeTab === 'propinas')
-            <livewire:session-tips :djsessionId="$djsession->id" />
-        @elseif ($activeTab === 'sorteos')
-            <livewire:session-lotteries :djsessionId="$djsession->id" />
-        @endif
+        <!-- Content Area (Summary - Song Requests - Tips - Raffles) -->
+        <div x-show="activeTab === 'summary'" x-cloak>
+            <template x-if="loaded.summary">
+                @livewire('djsession-summary', ['djsession' => $djsession])
+            </template>
+        </div>
+
+        <div x-show="activeTab === 'songs'" x-cloak>
+            <template x-if="loaded.songs">
+                @livewire('song-requests', ['djsessionId' => $djsession->id])
+            </template>
+        </div>
+
+        <div x-show="activeTab === 'tips'" x-cloak>
+            <template x-if="loaded.tips">
+                @livewire('djsession-summary', ['djsession' => $djsession])
+            </template>
+        </div>
+
+        <div x-show="activeTab === 'raffle'" x-cloak>
+            <template x-if="loaded.raffle">
+                @livewire('djsession-summary', ['djsession' => $djsession])
+            </template>
+        </div>
     </div>
 
     <x-confirmation-modal wire:model="confirmingSessionDeletion">

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
+            $table->unsignedInteger('song_request_timeout')->default(30);
             $table->unsignedInteger('current_users')->default(0);
             $table->unsignedInteger('peak_users')->default(0);
             $table->timestamps();

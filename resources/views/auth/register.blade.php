@@ -22,7 +22,7 @@
         <x-validation-errors class="mb-4" />
 
         <!-- Formulario -->
-        <form method="POST" action="{{ route('register') }}">
+        <form method="POST" action="{{ route('register') }}" onsubmit="localStorage.clear();">
             @csrf
 
             <!-- Nombre -->

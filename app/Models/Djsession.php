@@ -16,7 +16,8 @@ class Djsession extends Model
         'city',
         'description',
         'start_time',
-        'end_time'
+        'end_time',
+        'song_request_timeout'
         ];
 
     //------------------RELACIONES------------------//

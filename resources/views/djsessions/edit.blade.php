@@ -104,13 +104,7 @@
                     </div>
                 </div>
 
-                <!-- Participants with Icon (Show actual count) -->
-                <div class="flex items-center text-gray-700 space-x-2">
-                    <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.5 17.5a5.5 5.5 0 11-11 0 5.5 5.5 0 0111 0z" />
-                    </svg>
-                    <span class="font-semibold">{{ $djsession->participants_count ?? 0 }} Participantes</span>
-                </div>
+                <x-request-timeout timeout="{{ $djsession->song_request_timeout}}" />
 
                 <!-- Active Status Toggle -->
                 <div class="flex items-center space-x-3">
@@ -125,107 +119,57 @@
         </div>
 
         <!-- Tabs Navigation -->
-        <div class="mt-8 border-b border-gray-200">
+        <div class="mt-8 border-b border-gray-200" x-data="{ activeTab: 'summary', loaded:{summary: true, songs: false, tips: false, raffle: false} }">
             <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                <!-- Actual tabs with links since this is an edit view -->
-                <a 
-                    href="#"
-                    class="py-3 px-1 border-b-2 border-purple-500 text-purple-600 font-semibold transition-colors duration-300 flex items-center"
-                >
+                <x-tab-button tab="summary" color="indigo" x-on:click="activeTab = 'summary'; loaded.summary = true;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M20.2 7.8l-7.7 7.7-4-4-5.7 5.7"/><path d="M15 7h6v6"/>
+                    </svg>
+                    Resumen
+                </x-tab-button>
+                <x-tab-button tab="songs" color="purple" x-on:click="activeTab = 'songs'; loaded.songs = true;">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                     </svg>
                     Canciones
-                </a>
-
-                <a 
-                    href="#"
-                    class="py-3 px-1 text-gray-500 hover:text-yellow-600 font-semibold transition-colors duration-300 flex items-center"
-                >
+                </x-tab-button>
+                <x-tab-button tab="tips" color="yellow" x-on:click="activeTab = 'tips'; loaded.tips = true;">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Propinas
-                </a>
-
-                <a 
-                    href="#"
-                    class="py-3 px-1 text-gray-500 hover:text-pink-600 font-semibold transition-colors duration-300 flex items-center"
-                >
+                </x-tab-button>
+                <x-tab-button tab="raffle" color="pink" x-on:click="activeTab = 'raffle'; loaded.raffle = true;">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
                     Sorteos
-                </a>
+                </x-tab-button>
             </nav>
-        </div>
 
-        <!-- Content Area (Information about existing data) -->
-        <div class="mt-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <!-- Display summary of session content -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-purple-50 p-4 rounded-lg">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-purple-700 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                            </svg>
-                            Canciones
-                        </h3>
-                        <span class="bg-purple-200 text-purple-800 font-bold text-sm px-3 py-1 rounded-full">
-                            {{ $djsession->songs_count ?? 0 }}
-                        </span>
-                    </div>
-                    <p class="mt-2 text-sm text-purple-600">
-                        @if(($djsession->songs_count ?? 0) > 0)
-                            Hay {{ $djsession->songs_count }} canciones solicitadas en esta sesión.
-                        @else
-                            No hay canciones solicitadas todavía.
-                        @endif
-                    </p>
-                </div>
-                
-                <div class="bg-yellow-50 p-4 rounded-lg">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-yellow-700 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Propinas
-                        </h3>
-                        <span class="bg-yellow-200 text-yellow-800 font-bold text-sm px-3 py-1 rounded-full">
-                            {{ $djsession->tips_count ?? 0 }}
-                        </span>
-                    </div>
-                    <p class="mt-2 text-sm text-yellow-600">
-                        @if(($djsession->tips_count ?? 0) > 0)
-                            Has recibido {{ $djsession->tips_count }} propinas en esta sesión.
-                        @else
-                            No has recibido propinas todavía.
-                        @endif
-                    </p>
-                </div>
-                
-                <div class="bg-pink-50 p-4 rounded-lg">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-pink-700 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                            </svg>
-                            Sorteos
-                        </h3>
-                        <span class="bg-pink-200 text-pink-800 font-bold text-sm px-3 py-1 rounded-full">
-                            {{ $djsession->raffles_count ?? 0 }}
-                        </span>
-                    </div>
-                    <p class="mt-2 text-sm text-pink-600">
-                        @if(($djsession->raffles_count ?? 0) > 0)
-                            Has creado {{ $djsession->raffles_count }} sorteos en esta sesión.
-                        @else
-                            No has creado sorteos todavía.
-                        @endif
-                    </p>
-                </div>
+            <!-- Content Area (Summary - Song Requests - Tips - Raffles) -->
+            <div x-show="activeTab === 'summary'" x-cloak>
+                <template x-if="loaded.summary">
+                    @livewire('djsession-summary', ['djsession' => $djsession])
+                </template>
+            </div>
+
+            <div x-show="activeTab === 'songs'" x-cloak>
+                <template x-if="loaded.songs">
+                    @livewire('song-requests', ['djsessionId' => $djsession->id])
+                </template>
+            </div>
+
+            <div x-show="activeTab === 'tips'" x-cloak>
+                <template x-if="loaded.tips">
+                    @livewire('djsession-summary', ['djsession' => $djsession])
+                </template>
+            </div>
+
+            <div x-show="activeTab === 'raffle'" x-cloak>
+                <template x-if="loaded.raffle">
+                    @livewire('djsession-summary', ['djsession' => $djsession])
+                </template>
             </div>
         </div>
 

@@ -22,7 +22,11 @@
         <x-validation-errors class="mb-4" />
 
         <!-- Formulario -->
-        <form method="POST" action="{{ route('register') }}" onsubmit="localStorage.clear();">
+        <form 
+            method="POST" 
+            action="{{ route('register') }}"
+            @submit="closeModals(); $dispatch('show-global-loader'); localStorage.clear(); sessionStorage.setItem('fromRegister', 'true');"
+        >
             @csrf
 
             <!-- Nombre -->

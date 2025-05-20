@@ -27,11 +27,15 @@ class CreateNewUser implements CreatesNewUsers
             'role' => ['required', 'string', 'in:dj,user'],
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
             'role' => $input['role'],
         ]);
+
+        $user->createAsStripeCustomer();
+
+        return $user;
     }
 }

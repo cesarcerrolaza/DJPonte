@@ -1,17 +1,17 @@
 @extends('layouts/app')
 
 @section('content')
+    @if($djsessionActive)
+        @livewire('djsession-card', [
+            'djsession' => $djsessionActive,
+            'location' => $djsessionActive->fullLocation(),
+            'djName' => $djName,
+            'djAvatar' => $djAvatar,
+            'role' => $role
+        ])
+        <br>
+    @endif
     @if($role == 'dj')
-        @if($djsessionActive)
-            @livewire('djsession-card', [
-                'djsession' => $djsessionActive,
-                'location' => $djsessionActive->fullLocation(),
-                'djName' => $djName,
-                'djAvatar' => $djAvatar,
-                'role' => $role
-            ])
-            <br>
-        @endif
         @foreach($djsessions as $djsession)
             @include('components.djsession-card', [
                 'djsession' => $djsession,
@@ -27,24 +27,10 @@
             </svg>
             Crear Nueva Sesión
         </a>
-    @elseif($role == 'user')
-        @if($djsessionActive)
-            @livewire('djsession-card', [
-                'djsession' => $djsessionActive,
-                'location' => $djsessionActive->fullLocation(),
-                'djName' => $djName,
-                'djAvatar' => $djAvatar,
-                'role' => $role
-            ])
-            <br>
-        @else
-            <div class="flex justify-center">
-                <h1 class="text-2xl font-bold">No hay sesiones activas</h1>
-            </div>
-        @endif
-
-        
+    @elseif($role == 'user' && !$djsessionActive)
+        <div class="flex justify-center">
+            <h1 class="text-2xl font-bold">No hay sesiones activas</h1>
+        </div>
     @endif
-
     
 @endsection

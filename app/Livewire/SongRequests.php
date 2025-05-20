@@ -64,7 +64,7 @@ class SongRequests extends Component
 
     public function render()
     {
-        return view('livewire.song-requests');
+        return view('livewire.songs.song-requests');
     }
 }
 

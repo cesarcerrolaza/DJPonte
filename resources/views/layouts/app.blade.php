@@ -17,27 +17,31 @@
         <!-- Styles -->
         @livewireStyles
     </head>
-    <body class="font-sans antialiased">
+    <body x-data="{ showLoader: false }"
+        x-on:show-global-loader.window="showLoader = true"
+        class="font-sans antialiased relative">
         <x-banner />
 
-        <div class="flex flex-col min-h-screen">
+        {{-- Loader pantalla completa --}}
+        <div x-show="showLoader"
+            x-transition.opacity
+            class="fixed inset-0 z-50 pointer-events-auto overflow-hidden"
+            style="display: none;">
+            <x-loader />
+        </div>
 
-            <!-- Page Heading -->
+        {{-- Contenido principal --}}
+        <div class="flex flex-col min-h-screen">
             @include('layouts.partials_.header')
-            <!-- Contenedor de contenido (sidebar + contenido principal) -->
             <div class="flex flex-1">
                 @include('layouts.partials_.sidebar')
-                <!-- Contenido principal -->
                 <div class="flex-1 p-6 bg-gray-100">
-                    <!-- Aquí iría el contenido principal de tu aplicación -->
                     @yield('content')
                 </div>
             </div>
-            <!-- Page Content -->
         </div>
-
-        @stack('modals')
 
         @livewireScripts
     </body>
+
 </html>

@@ -1,9 +1,38 @@
-<div>
+<div
+@if($role === 'user') 
+x-data="{
+        formShown: null,
+
+        initRoute() {
+            const path = window.location.pathname;
+
+            if (path.endsWith('/song-request')) {
+                this.formShown = 'song-request';
+            }
+
+            if (path.endsWith('/tip')) {
+                this.formShown = 'tip';
+            }
+
+            if (path.endsWith('/raffle')) {
+                this.formShown = 'raffle';
+            }
+        },
+
+        openForm(form) {
+            this.formShown = form;
+            history.pushState({}, '', '/djsessions/' + form);
+        }
+    }"
+x-init="initRoute()"
+@endif
+>
     <div 
         class="flex items-center justify-between bg-white p-4 rounded-lg shadow-md w-full max-w-5xl mx-auto hover:bg-gray-50 transition-colors duration-200 {{ $role === 'dj' ? 'hover:bg-gray-50 cursor-pointer' : '' }}"
         @if($role === 'dj') 
             onclick="window.location='{{ route('djsessions.show', $djsession) }}'" 
             style="cursor: pointer;" 
+            
         @endif
     >
         <!-- Imagen del local -->
@@ -32,15 +61,15 @@
                 </div>
             
                 <div class="flex space-x-2 mt-4">
-                    <button wire:click="showAction('song-request')" class="bg-pink-500 text-white font-bold text-sm px-4 py-2 rounded flex items-center">
+                    <button @click="openForm('song-request')" class="bg-pink-500 text-white font-bold text-sm px-4 py-2 rounded flex items-center">
                         Cancion
                         <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4a1 1 0 011-1h6a1 1 0 011 1v10a3 3 0 11-2-2.83V7h-4v7a3 3 0 11-2-2.83V4z"/></svg>
                     </button>
-                    <button wire:click="showAction('tip')" class="bg-yellow-400 text-black font-bold text-sm px-4 py-2 rounded flex items-center">
+                    <button @click="openForm('tip')" class="bg-yellow-400 text-black font-bold text-sm px-4 py-2 rounded flex items-center">
                         Propina
                         <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12H9v2H7v2h2v2H7v2h2v2h2v-2h2v-2h-2v-2h2V8h-2V6z"/></svg>
                     </button>
-                    <button wire:click="showAction('raffle')" class="bg-purple-600 text-white font-bold text-sm px-4 py-2 rounded flex items-center">
+                    <button @click="openForm('raffle')" class="bg-purple-600 text-white font-bold text-sm px-4 py-2 rounded flex items-center">
                         Sorteo
                         <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a1 1 0 000 2h12a1 1 0 100-2H4zM3 6a1 1 0 011 1v9a2 2 0 002 2h8a2 2 0 002-2V7a1 1 0 112 0v9a4 4 0 01-4 4H6a4 4 0 01-4-4V7a1 1 0 011-1z"/></svg>
                     </button>
@@ -67,19 +96,19 @@
         </div>
     </div>
 
-@if ($actionShown === 'song-request')
-    @livewire('song-request-form', [
-        'djsessionId' => $djsession->id,
-        'songRequestTimeout' => $djsession->song_request_timeout
-    ])
-@elseif ($actionShown === 'tip')
-    @livewire('tip', [
-        'djsessionId' => $djsession->id
-    ])
-@elseif ($actionShown === 'raffle')
-    @livewire('raffle', [
-        'djsessionId' => $djsession->id
-    ])
-@endif
 
+    <template x-if="formShown === 'song-request'">
+        @livewire('song-request-form', [
+            'djsessionId' => $djsession->id,
+            'songRequestTimeout' => $djsession->song_request_timeout
+        ])
+    </template>
+
+    <template x-if="formShown === 'tip'">
+        @livewire('tip-form', [
+            'djsession' => $djsession
+        ])
+    </template>
+    <template x-if="formShown === 'raffle'">
+    </template>
 </div>

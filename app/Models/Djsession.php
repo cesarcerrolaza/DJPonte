@@ -53,6 +53,21 @@ class Djsession extends Model
         return $this->hasMany(SongRequest::class);
     }
 
+    // Donaciones de la sesión
+    public function tips()
+    {
+        return $this->hasMany(Tip::class);
+    }
+
+    // Donantes de la sesión
+    public function donors()
+    {
+        return $this->hasMany(Donor::class);
+    }
+
+    // Rifas de la sesión
+    
+
     //------------------METODOS------------------//
 
     // Añadir canción a la lista de peticiones

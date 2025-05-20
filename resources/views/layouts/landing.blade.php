@@ -17,7 +17,15 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="font-sans antialiased">
+<body class="font-sans antialiased"
+    x-data="{ showLoader: false }"
+    x-on:show-global-loader.window="showLoader = true">
+    <div x-show="showLoader"
+        x-transition.opacity
+        class="fixed inset-0 z-50 pointer-events-auto overflow-hidden"
+        style="display: none;">
+        <x-loader />
+    </div>
     <div class="min-h-screen bg-black flex">
         <!-- Columna izquierda: Imagen de fondo con texto -->
         <div class="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-purple-900 to-blue-900">

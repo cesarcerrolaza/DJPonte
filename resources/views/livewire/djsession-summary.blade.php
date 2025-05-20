@@ -64,12 +64,12 @@
                     Propinas
                 </h3>
                 <span class="bg-yellow-200 text-yellow-800 font-bold text-sm px-3 py-1 rounded-full">
-                    {{ $djsession->tips_count ?? 0 }}
+                    {{ $tipsTotal/100 ?? 0 }} €
                 </span>
             </div>
             <p class="mt-2 text-sm text-yellow-600">
-                @if(($djsession->tips_count ?? 0) > 0)
-                    Has recibido {{ $djsession->tips_count }} propinas en esta sesión.
+                @if($tipsTotal > 0)
+                    <livewire:top-donors :djsessionId="$djsession->id" :viewType="'summary'" :key="'summary'" />
                 @else
                     No has recibido propinas todavía.
                 @endif

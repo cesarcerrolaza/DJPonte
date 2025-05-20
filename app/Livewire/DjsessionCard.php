@@ -119,7 +119,7 @@ class DjsessionCard extends Component
                 break;
             case 'tip':
                 // Lógica para propinas
-                $this->emit('openTipModal');
+                $this->actionShown = 'tip';
                 break;
             case 'raffle':
                 // Lógica para sorteos

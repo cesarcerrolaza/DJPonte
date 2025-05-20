@@ -29,7 +29,8 @@
                     this.showLoginModal = true;
                 }
 
-                if (path === '/register') {
+                if (path === '/register' || sessionStorage.getItem('fromRegister') === 'true') {
+                    sessionStorage.removeItem('fromRegister');
                     this.showRegisterModal = true;
                 }
             },
@@ -40,7 +41,6 @@
             },
 
             openRegisterModal() {
-                this.showNoModal = false;
                 this.showRegisterModal = true;
                 history.pushState({}, '', '/register');
             },

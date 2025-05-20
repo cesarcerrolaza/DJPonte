@@ -150,25 +150,28 @@
             <!-- Content Area (Summary - Song Requests - Tips - Raffles) -->
             <div x-show="activeTab === 'summary'" x-cloak>
                 <template x-if="loaded.summary">
-                    @livewire('djsession-summary', ['djsession' => $djsession])
+                    <livewire:djsession-summary :djsession="$djsession" />
                 </template>
             </div>
 
             <div x-show="activeTab === 'songs'" x-cloak>
                 <template x-if="loaded.songs">
-                    @livewire('song-requests', ['djsessionId' => $djsession->id])
+                    <livewire:song-requests :djsessionId="$djsession->id" />
                 </template>
             </div>
 
             <div x-show="activeTab === 'tips'" x-cloak>
                 <template x-if="loaded.tips">
-                    @livewire('djsession-summary', ['djsession' => $djsession])
+                    <div>
+                        <livewire:top-donors :djsessionId="$djsession->id" :viewType="'management'" :key="'management'" />
+                        <livewire:tips-list :djsessionId="$djsession->id"/>
+                    </div>
                 </template>
             </div>
 
             <div x-show="activeTab === 'raffle'" x-cloak>
                 <template x-if="loaded.raffle">
-                    @livewire('djsession-summary', ['djsession' => $djsession])
+                    <livewire:djsession-summary :djsession="$djsession" />
                 </template>
             </div>
         </div>

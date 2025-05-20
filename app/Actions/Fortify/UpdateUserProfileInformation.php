@@ -36,6 +36,10 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'email' => $input['email'],
             ])->save();
         }
+        
+        if ($user->hasStripeId()) {
+            $user->syncStripeCustomerDetails();
+        }
     }
 
     /**

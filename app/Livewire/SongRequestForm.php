@@ -4,10 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\SongRequest;
-use App\Models\Song;
 use App\Events\NewSongRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Livewire\SongSearchable;
 use Illuminate\Support\Facades\Log;
 
 class SongRequestForm extends Component
@@ -21,6 +21,8 @@ class SongRequestForm extends Component
     public $userId = null;
     public $userLastRequestAt = null;
     public $songRequestTimeout = null;
+
+    use SongSearchable;
     
     public function mount(Request $request, $djsessionId, $songRequestTimeout)
     {
@@ -30,42 +32,7 @@ class SongRequestForm extends Component
         $this->songRequestTimeout = $songRequestTimeout;
         $this->loadTopSongs();
     }
-    
-    public function updatedSongName()
-    {
-        $this->searchSongs();
-    }
-    
-    public function searchSongs()
-    {
-        if (strlen($this->songName) < 2) {
-            $this->songSuggestions = [];
-            return;
-        }
-        
-        $this->songSuggestions = Song::where('title', 'LIKE', '%' . $this->songName . '%')
-            ->take(5)
-            ->get()
-            ->map(function($song) {
-                return [
-                    'id' => $song->id,
-                    'title' => $song->title,
-                    'artist' => $song->artist
-                ];
-            })
-            ->toArray();
-    }
-    
-    public function selectSong($songId)
-    {
-        $song = Song::find($songId);
-        if ($song) {
-            $this->songName = $song->title;
-            $this->artistName = $song->artist;
-            $this->selectedSong = $song->id;
-        }
-        $this->songSuggestions = [];
-    }
+
     
     public function loadTopSongs()
     {
@@ -139,6 +106,6 @@ class SongRequestForm extends Component
     
     public function render()
     {
-        return view('livewire.song-request-form');
+        return view('livewire.songs.song-request-form');
     }
 }

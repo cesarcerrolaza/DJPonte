@@ -11,9 +11,7 @@ class DjsessionSummary extends Component
     public $songRequestsCount;
     public $topSongsCount = 3;
     public $topSongRequests;
-    public $tipsCount;
-    public $topTipsCount = 3;
-    public $topTips;
+    public $tipsTotal;
     public $raffleParticipants;
     public $lastRaffleParticipant;
     public $rafflePrize;
@@ -22,6 +20,13 @@ class DjsessionSummary extends Component
     public function render()
     {
         return view('livewire.djsession-summary');
+    }
+
+    public function getListeners()
+    {
+        return [
+            "echo-private:djsession.{$this->djsession->id},NewTip" => 'handleNewTip',
+        ];
     }
 
     public function mount() {
@@ -40,9 +45,9 @@ class DjsessionSummary extends Component
                 ];
             })
             ->toArray();       
-        /*
-        $this->tipsCount = $this->djsession->tips()->count();
-        $this->topTips = $this->djsession->tips()->sortByDesc('total')->take($this->topTipsCount);
+        
+        $this->tipsTotal = $this->tipsTotal = $this->djsession->tips()->where('status', 'paid')->sum('amount');
+            /*
 
         $this->raffleParticipants = $this->djsession->raffle->participants()->count();
         $this->rafflePrize = $this->djsession->raffle->prize;
@@ -79,6 +84,15 @@ class DjsessionSummary extends Component
             }
         }
     }
+
+    public function handleNewTip($payload)
+    {
+        if ($payload['status'] === 'paid') {
+            $this->tipsTotal = $this->tipsTotal + $payload['donor_amount'];
+        }
+    }
+
+
 
 
 }

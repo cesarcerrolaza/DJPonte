@@ -85,15 +85,13 @@
                     Sorteos
                 </h3>
                 <span class="bg-pink-200 text-pink-800 font-bold text-sm px-3 py-1 rounded-full">
-                    {{ $djsession->raffles_count ?? 0 }}
+                    {{ $rafflesCount ?? 0 }}
                 </span>
             </div>
-            <p class="mt-2 text-sm text-pink-600">
-                @if(($djsession->raffles_count ?? 0) > 0)
-                    Has creado {{ $djsession->raffles_count }} sorteos en esta sesión.
-                @else
-                    No has creado sorteos todavía.
-                @endif
-            </p>
+                <p class="mt-2 text-sm text-pink-600">
+                    <livewire:raffle-info :djsessionId="$djsession->id" :viewType="'summary'" :key="$raffleInfoKey" />
+                </p>
+            </div>
         </div>
+    
 </div>

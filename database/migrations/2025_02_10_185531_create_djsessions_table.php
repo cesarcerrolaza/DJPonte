@@ -21,7 +21,11 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->string('image')->nullable();
             $table->boolean('active')->default(true);
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->bigInteger('user_id')->unsigned()->nullable();
+                    $table->foreign('user_id')
+              ->references('id')
+              ->on('users')
+              ->onDelete('cascade');
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
             $table->unsignedInteger('song_request_timeout')->default(30);

@@ -41,7 +41,7 @@
             {{ $djsession->current_users }} Participantes
         </div>
 
-        @if($role == 'user')
+        @if($role == 'user' && !$isCurrentDjsession)
         <a href="{{ route('djsessions.join', $djsession) }}" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition">
             Unirse
         </a>

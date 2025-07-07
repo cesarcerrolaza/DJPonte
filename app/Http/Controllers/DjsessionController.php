@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Http\Requests\DjsessionRequest;
 use App\Services\DjsessionService;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\DeleteDjsessionJob;
 use Illuminate\Support\Facades\Storage;
 
 class DjsessionController extends Controller
@@ -172,17 +173,13 @@ class DjsessionController extends Controller
             abort(403);
         }
 
-        app(DjsessionService::class)->deactivate($djsession);
-
+        app(DjsessionService::class)->preDelete($djsession);
+        
         // Eliminar la imagen de la sesión si existe y no es la imagen por defecto
-        if ($djsession->image && $djsession->image !== Djsession::getDefaultImagePath()) {
-            Storage::disk('public')->delete($djsession->image);
-        }
-        $redirect = redirect()->route('djsessions.index')
-        ->with('success', 'Sesión eliminada correctamente.');
-
-        $djsession->delete();
-        return $redirect;
+        DeleteDjsessionJob::dispatch($djsession)->delay(now()->addSeconds(10));
+       // En tu método destroy()
+        return redirect()->route('djsessions.index')
+            ->with('success', 'La eliminación de la sesión ha sido programada y se completará en breve.');
     }
 
     public function join(Request $request, Djsession $djsession)
@@ -233,31 +230,17 @@ class DjsessionController extends Controller
         }
         else{
             $djsessions = Djsession::with('dj')
-                        ->where('active', true)
-                        ->where('name', 'LIKE', "%$query%")
-                        ->orWhere('code', 'LIKE', "%$query%")
-                        ->get();
+                ->where('active', true)
+                ->where(function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('name', 'LIKE', "%$query%")
+                    ->orWhere('code', 'LIKE', "%$query%");
+                })
+                ->get();
+            $currentDjsessionId = $user->djsession_id ?? null;
         }
 
-        return view('djsessions.search', compact('djsessions', 'role'));
+        return view('djsessions.search', compact('djsessions', 'role', 'currentDjsessionId'));
 
     }
-
-
-    public function requestSong($id)
-    {
-        // Aquí puedes implementar la lógica para solicitar una canción en una sesión de DJ
-        // Validar y agregar la solicitud de canción a la base de datos
-        return redirect()->route('djsessions.show', ['id' => $id]);
-    }
-
-    public function voteSong($id)
-    {
-        // Aquí puedes implementar la lógica para votar por una canción en una sesión de DJ
-        // Validar y actualizar el voto en la base de datos
-        return redirect()->route('djsessions.show', ['id' => $id]);
-    }
-
-
 
 }

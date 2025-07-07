@@ -1,4 +1,4 @@
-<div class="bg-white p-4 rounded-lg shadow-md w-full max-w-5xl mx-auto mt-2 border-t-4 border-pink-500"
+<div class="bg-white p-4 rounded-lg shadow-md w-full max-w-5xl mx-auto mt-2 border-t-4 border-purple-500"
     x-data="{
             processing: false,
             userVotes: [],
@@ -147,7 +147,7 @@
                 </button>
                 <button 
                     type="submit"
-                    class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+                    class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
                     x-on:click="
                         if(!waiting()) { 
                             processing = true; 

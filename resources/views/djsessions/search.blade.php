@@ -7,6 +7,8 @@
             'location' => $djsession->fullLocation(),
             'djName' => $djsession->dj->name,
             'djAvatar' => $djsession->dj->profile_photo_path,
+            'role' => $role,
+            'isCurrentDjsession' => $djsession->id === $currentDjsessionId,
         ])
         <br>
     @endforeach

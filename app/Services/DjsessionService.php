@@ -30,8 +30,7 @@ class DjsessionService
             if ($dj->djsession_id) {
                 $oldSession = Djsession::find($dj->djsession_id);
                 if ($oldSession) {
-                    $oldSession->active = false;
-                    $oldSession->save();
+                    $this->deactivate($oldSession);
                 }
             }
 
@@ -54,30 +53,45 @@ class DjsessionService
         );
     }
 
-    public function deactivate(Djsession $session)
+    public function deactivate(Djsession $djsession)
     {
-        DB::transaction(function () use ($session) {
-            // Marcar como no activa
-            $session->active = false;
-            $session->end_time = now(); // Establecer la hora de finalización
-            $session->current_users = 0; // Reiniciar el contador de usuarios
-            $session->save();
-
-            // Quitar la sesión al DJ y a los usuarios conectados
-            User::where('djsession_id', $session->id)->update(['djsession_id' => null]);
-        });
+        $this->deactivateTransaction($djsession);
         broadcast(
-            new \App\Events\DjsessionUpdate($session->id, [
+            new \App\Events\DjsessionUpdate($djsession->id, [
                 'current_users' => 0,
                 'active' => false
             ])
         );
     }
 
-    public function join(Djsession $session, User $user)
+    public function preDelete(Djsession $djsession)
     {
-        Log::info('Joining session', ['session_id' => $session->id, 'user_id' => $user->id]);
-        DB::transaction(function () use ($session, $user) {
+        $this->deactivateTransaction($djsession);
+        $djsession->user_id = null; // Desvincular al DJ de la sesión
+        $djsession->save();
+        broadcast(
+            new \App\Events\DjsessionDeleted($djsession->id)
+        );
+    }
+
+    protected function deactivateTransaction(Djsession $djsession)
+    {
+        DB::transaction(function () use ($djsession) {
+            // Marcar como no activa
+            $djsession->active = false;
+            $djsession->end_time = now(); // Establecer la hora de finalización
+            $djsession->current_users = 0; // Reiniciar el contador de usuarios
+            $djsession->save();
+
+            // Quitar la sesión al DJ y a los usuarios conectados
+            User::where('djsession_id', $djsession->id)->update(['djsession_id' => null]);
+        });
+    }
+
+    public function join(Djsession $djsession, User $user)
+    {
+        Log::info('Joining session', ['session_id' => $djsession->id, 'user_id' => $user->id]);
+        DB::transaction(function () use ($djsession, $user) {
             // Desconectar al usuario de su sesión activa (si aplica)
             $oldSession = $user->djsessionActive;
             if ($oldSession) {
@@ -86,37 +100,37 @@ class DjsessionService
             }
 
             // Unir al usuario a la nueva sesión
-            $user->djsession_id = $session->id;
+            $user->djsession_id = $djsession->id;
             $user->save();
 
             // Incrementar el contador de usuarios en la sesión
-            $session->current_users++;
-            if ($session->current_users > $session->peak_users) {
-                $session->peak_users = $session->current_users;
+            $djsession->current_users++;
+            if ($djsession->current_users > $djsession->peak_users) {
+                $djsession->peak_users = $djsession->current_users;
             }
-            $session->save();
+            $djsession->save();
         });
         broadcast(
-            new \App\Events\DjsessionUpdate($session->id, [
-                'current_users' => $session->current_users
+            new \App\Events\DjsessionUpdate($djsession->id, [
+                'current_users' => $djsession->current_users
             ])
         );
     }
 
-    public function leave(Djsession $session, User $user)
+    public function leave(Djsession $djsession, User $user)
     {
-        DB::transaction(function () use ($session, $user) {
+        DB::transaction(function () use ($djsession, $user) {
             // Desconectar al usuario de la sesión
             $user->djsession_id = null;
             $user->save();
 
             // Decrementar el contador de usuarios en la sesión
-            $session->current_users--;
-            $session->save();
+            $djsession->current_users--;
+            $djsession->save();
         });
         broadcast(
-            new \App\Events\DjsessionUpdate($session->id, [
-                'current_users' => $session->current_users
+            new \App\Events\DjsessionUpdate($djsession->id, [
+                'current_users' => $djsession->current_users
             ])
         );
     }

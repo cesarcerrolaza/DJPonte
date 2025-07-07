@@ -11,6 +11,10 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
 
+/**
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ * @mixin \Laravel\Cashier\Billable
+ */
 class User extends Authenticatable
 {
     use HasApiTokens;
@@ -73,6 +77,31 @@ class User extends Authenticatable
     public function socialUsers()
     {
         return $this->hasMany(SocialAccount::class);
+    }
+
+    // Donaciones del usuario
+    public function tips()
+    {
+        return $this->hasMany(Tip::class, 'user_id');
+    }
+
+    // Sorteos creados como DJ
+    public function rafflesCreated()
+    {
+        return $this->hasMany(Raffle::class, 'dj_id');
+    }
+
+    // Sorteos ganados
+    public function rafflesWon()
+    {
+        return $this->morphMany(Raffle::class, 'winner');
+    }
+
+    // Sorteos en los que ha participado
+    public function rafflesParticipated()
+    {
+        return $this->belongsToMany(Raffle::class, 'raffle_user')
+                    ->withTimestamps();
     }
 
     //------------------METODOS------------------//

@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Djsession;
-use App\Models\SongRequest;
 use App\Services\DjsessionService;
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -45,6 +44,7 @@ class DjSessionManager extends Component
         } else {
             app(DjsessionService::class)->deactivate($this->djsession);
         }
+        $this->djsession->refresh();
     }
 
     #[On('echo:djsession.{djsessionId},DjsessionUpdate')]

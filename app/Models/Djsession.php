@@ -66,6 +66,16 @@ class Djsession extends Model
     }
 
     // Rifas de la sesión
+    public function raffles()
+    {
+        return $this->hasMany(Raffle::class);
+    }
+
+    // Rifa actual
+    public function currentRaffle()
+    {
+        return $this->hasOne(Raffle::class)->where('is_current', true);
+    }
     
 
     //------------------METODOS------------------//

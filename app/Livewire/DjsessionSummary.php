@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Log;
 
 class DjsessionSummary extends Component
 {
@@ -12,9 +13,9 @@ class DjsessionSummary extends Component
     public $topSongsCount = 3;
     public $topSongRequests;
     public $tipsTotal;
-    public $raffleParticipants;
-    public $lastRaffleParticipant;
-    public $rafflePrize;
+    public $rafflesCount;
+    public $showRaffle = true;
+    public $raffleInfoKey;
 
 
     public function render()
@@ -26,6 +27,7 @@ class DjsessionSummary extends Component
     {
         return [
             "echo-private:djsession.{$this->djsession->id},NewTip" => 'handleNewTip',
+            "echo:djsession.{$this->djsession->id},CurrentRaffleDeleted" => 'refreshRaffle',
         ];
     }
 
@@ -44,15 +46,12 @@ class DjsessionSummary extends Component
                     'score' => $request->score
                 ];
             })
-            ->toArray();       
-        
-        $this->tipsTotal = $this->tipsTotal = $this->djsession->tips()->where('status', 'paid')->sum('amount');
-            /*
+            ->toArray();
 
-        $this->raffleParticipants = $this->djsession->raffle->participants()->count();
-        $this->rafflePrize = $this->djsession->raffle->prize;
-        $this->lastRaffleParticipant = $this->djsession->raffle->participants()->orderBy('created_at', 'desc')->first();
-        */
+        $this->tipsTotal = $this->djsession->tips()->where('status', 'paid')->sum('amount');
+
+        $this->rafflesCount = $this->djsession->raffles()->count();
+        $this->refreshRaffle();
     }
 
     #[On('echo:song-requests,NewSongRequest')]
@@ -85,6 +84,7 @@ class DjsessionSummary extends Component
         }
     }
 
+
     public function handleNewTip($payload)
     {
         if ($payload['status'] === 'paid') {
@@ -92,7 +92,9 @@ class DjsessionSummary extends Component
         }
     }
 
-
-
-
+    public function refreshRaffle()
+    {
+        $this->raffleInfoKey = 'raffle-summary-' . uniqid();
+        Log::info('SUMMARY: Refreshing raffle with key: ' . $this->raffleInfoKey);
+    }
 }

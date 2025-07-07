@@ -8,7 +8,7 @@ use App\Models\Djsession;
 use App\Livewire\SongSearchable;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
-use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 
@@ -57,7 +57,7 @@ class TipForm extends Component
     {
         $this->validate($this->rules);
         $tip = Tip::create([
-            'user_id'        => auth()->id(),
+            'user_id'        => Auth::id(),
             'dj_id'          => $this->djsession->user_id,
             'djsession_id'   => $this->djsession->id,
             'song_id'        => $this->selectedSong,
@@ -71,7 +71,7 @@ class TipForm extends Component
 
         // Configura la API key de Stripe
         Stripe::setApiKey(config('cashier.secret'));
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user->stripe_id === null) {
            $user->createAsStripeCustomer();
         }

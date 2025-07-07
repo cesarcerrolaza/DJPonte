@@ -21,11 +21,19 @@ class SocialUser extends Model
         return $this->belongsTo(Djsession::class);
     }
 
-    // Comentarios en un post
-    public function comments()
+    // Sorteos ganados
+    public function raffles()
     {
-        return $this->hasMany(SocialPostComment::class);
+        return $this->morphMany(Raffle::class, 'winner');
     }
+    
+    // Sorteos en los que ha participado
+    public function rafflesParticipated()
+    {
+        return $this->belongsToMany(Raffle::class, 'raffle_user')
+                    ->withTimestamps();
+    }
+
 
 
     //------------------METODOS------------------//

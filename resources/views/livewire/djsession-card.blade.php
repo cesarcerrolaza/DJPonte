@@ -25,6 +25,7 @@ x-data="{
         }
     }"
 x-init="initRoute()"
+x-on:session-deleted-reload.window="window.location.reload()"
 @endif
 >
     <div 
@@ -61,7 +62,7 @@ x-init="initRoute()"
                 </div>
             
                 <div class="flex space-x-2 mt-4">
-                    <button @click="openForm('song-request')" class="bg-pink-500 text-white font-bold text-sm px-4 py-2 rounded flex items-center">
+                    <button @click="openForm('song-request')" class="bg-purple-500 text-white font-bold text-sm px-4 py-2 rounded flex items-center">
                         Cancion
                         <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4a1 1 0 011-1h6a1 1 0 011 1v10a3 3 0 11-2-2.83V7h-4v7a3 3 0 11-2-2.83V4z"/></svg>
                     </button>
@@ -69,46 +70,50 @@ x-init="initRoute()"
                         Propina
                         <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12H9v2H7v2h2v2H7v2h2v2h2v-2h2v-2h-2v-2h2V8h-2V6z"/></svg>
                     </button>
-                    <button @click="openForm('raffle')" class="bg-purple-600 text-white font-bold text-sm px-4 py-2 rounded flex items-center">
+                    <button @click="openForm('raffle')" class="bg-pink-500 text-white font-bold text-sm px-4 py-2 rounded flex items-center">
                         Sorteo
                         <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a1 1 0 000 2h12a1 1 0 100-2H4zM3 6a1 1 0 011 1v9a2 2 0 002 2h8a2 2 0 002-2V7a1 1 0 112 0v9a4 4 0 01-4 4H6a4 4 0 01-4-4V7a1 1 0 011-1z"/></svg>
                     </button>
                 </div>
             @endif
         </div>
-        
-        <!-- Botón Entrar/Salir y participantes -->
-        <div class="flex flex-col items-end justify-between h-full ml-4">
-        
-            @if($isCurrentDjsession)
-                <x-danger-button wire:click="setCurrent">
-                    {{ $role == 'dj' ? 'Desactivar' : 'Salir' }}   
-                </x-danger-button>
-            @else
-                <x-button wire:click="setCurrent" :disabled="$role == 'user' && !$djsession->active">
-                    {{ $role == 'dj' ? 'Activar' : 'Unirse' }}
-                </x-button>
-            @endif
-            <div class="text-sm text-black mt-4 flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6v4l5-5-5-5v4z"/></svg>
-                {{ $djsession->current_users }} Participantes
+        @if ($role == 'user')
+            <!-- Botón Entrar/Salir y participantes -->
+            <div class="flex flex-col items-end justify-between h-full ml-4">
+                @if($isCurrentDjsession)
+                    <x-danger-button wire:click="setCurrent">
+                        Salir   
+                    </x-danger-button>
+                @else
+                    <x-button 
+                        wire:click="setCurrent"
+                        class="bg-purple-500 hover:bg-purple-600 text-white font-bold text-sm px-4 py-2 rounded flex items-center transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        :disabled="$role == 'user' && !$djsession->active"
+                    >
+                        Unirse
+                    </x-button>
+                @endif
+                <div class="text-sm text-black mt-4 flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6v4l5-5-5-5v4z"/></svg>
+                    {{ $djsession->current_users }} Participantes
+                </div>
+                
             </div>
-        </div>
+        @endif
     </div>
 
+    @if($showUserOptions)
+        <div x-show="formShown === 'song-request'" x-cloak>
+            <livewire:song-request-form :djsessionId="$djsession->id" :songRequestTimeout="$djsession->song_request_timeout"/>    
+        </div>
 
-    <template x-if="formShown === 'song-request'">
-        @livewire('song-request-form', [
-            'djsessionId' => $djsession->id,
-            'songRequestTimeout' => $djsession->song_request_timeout
-        ])
-    </template>
+        <div x-show="formShown === 'tip'" x-cloak>
+            <livewire:tip-form :djsession="$djsession"/>
+        </div>
 
-    <template x-if="formShown === 'tip'">
-        @livewire('tip-form', [
-            'djsession' => $djsession
-        ])
-    </template>
-    <template x-if="formShown === 'raffle'">
-    </template>
+        <div x-show="formShown === 'raffle'" x-cloak>
+            <livewire:raffle-entry-form :djsession="$djsession" :key="$raffleInfoKey"/>
+        </div>
+
+    @endif
 </div>

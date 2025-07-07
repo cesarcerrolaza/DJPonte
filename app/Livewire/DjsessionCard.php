@@ -7,7 +7,7 @@ use App\Services\DjsessionService;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
-use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Auth;
 
 class DjsessionCard extends Component
 {
@@ -22,6 +22,7 @@ class DjsessionCard extends Component
     public $isCurrentDjsession;
     public $djsessionId;
     public $actionShown = null;
+    public $raffleInfoKey;
 
 
 
@@ -36,23 +37,13 @@ class DjsessionCard extends Component
         $this->showUserOptions = $role === 'user';
         $this->isCurrentDjsession = true;
         $this->actionShown = null;
-        /*
-        $this->title = 'Sesión Gózalo';
-        $this->sessionCode = '26543';
-        $this->address = 'Paseo Almte. Pascual Pery, 25, 11004 Cádiz';
-        $this->venueImage = 'storage/djsessions/momart.jpg';
-        $this->venueName = 'Momart';
-        $this->djName = 'DJ Avatar';
-        $this->djAvatar = 'storage/users/dj-avatar.jpg';
-        $this->participants = 89;
-        $this->exitUrl = route('djsession.exit');
-        */
+        $this->refreshRaffle();
     }
 
     public function toggleStatus()
     {
         if (!$this->djsession->active) {
-            app(DjsessionService::class)->activate($this->djsession, auth()->user());
+            app(DjsessionService::class)->activate($this->djsession, Auth::user());
         } else {
             app(DjsessionService::class)->deactivate($this->djsession);
         }
@@ -73,22 +64,31 @@ class DjsessionCard extends Component
             if ($this->role === 'dj') {
                 app(DjsessionService::class)->deactivate($this->djsession);
             } else {
-                app(DjsessionService::class)->leave($this->djsession, auth()->user());
+                app(DjsessionService::class)->leave($this->djsession, Auth::user());
             }
             $this->isCurrentDjsession = false;
         } else {
             if ($this->role === 'dj') {
-                app(DjsessionService::class)->activate($this->djsession, auth()->user());
+                app(DjsessionService::class)->activate($this->djsession, Auth::user());
             } else {
-                app(DjsessionService::class)->join($this->djsession, auth()->user());
+                app(DjsessionService::class)->join($this->djsession, Auth::user());
             }
             $this->isCurrentDjsession = true;
         }
     }
 
-    #[On('echo:djsession.{djsessionId},DjsessionUpdate')]
+    public function getListeners()
+    {
+        return [
+            "echo:djsession.{$this->djsessionId},DjsessionUpdate" => 'djsessionUpdate',
+            "echo:djsession.{$this->djsessionId},CurrentRaffleDeleted" => 'refreshRaffle',
+            "echo:djsession.{$this->djsessionId},DjsessionDeleted" => 'djsessionDeleted',
+        ];
+    }
+
     public function djsessionUpdate($eventData)
     {
+        
         Log::info('Djsession update event received', ['eventData' => $eventData]);
         if (!isset($eventData['active']) && !isset($eventData['current_users'])) {
             $this->djsession = Djsession::find($eventData['djsession_id']);
@@ -109,6 +109,11 @@ class DjsessionCard extends Component
         //$this->loadRequests($eventData['djsession_id']);
     }
 
+    public function djsessionDeleted()
+    {
+        $this->dispatch('session-deleted-reload');
+    }
+
     //
     public function showAction($type){
         switch ($type) {
@@ -126,6 +131,11 @@ class DjsessionCard extends Component
                 $this->emit('openRaffleModal');
                 break;
         }
+    }
+
+    public function refreshRaffle()
+    {
+        $this->raffleInfoKey = 'raffle-djsesion-card-' . uniqid();
     }
 
     public function render()

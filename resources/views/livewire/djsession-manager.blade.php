@@ -83,7 +83,7 @@
     </div>
 
     <!-- Tabs Navigation -->
-    <div class="mt-8 border-b border-gray-200" x-data="{ activeTab: 'summary', loaded:{summary: true, songs: false, tips: false, raffle: false} }">
+    <div class="mt-8 border-b border-gray-200" x-data="{ activeTab: 'summary', loaded:{summary: true, songs: false, tips: false, raffless: false} }">
         <nav class="-mb-px flex space-x-6" aria-label="Tabs">
             <x-tab-button tab="summary" color="indigo" x-on:click="activeTab = 'summary'; loaded.summary = true;">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -103,7 +103,7 @@
                 </svg>
                 Propinas
             </x-tab-button>
-            <x-tab-button tab="raffle" color="pink" x-on:click="activeTab = 'raffle'; loaded.raffle = true;">
+            <x-tab-button tab="raffles" color="pink" x-on:click="activeTab = 'raffles'; loaded.raffles = true;">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                 </svg>
@@ -113,31 +113,24 @@
 
         <!-- Content Area (Summary - Song Requests - Tips - Raffles) -->
         <div x-show="activeTab === 'summary'" x-cloak>
-            <template x-if="loaded.summary">
-                <livewire:djsession-summary :djsession="$djsession"/>
-            </template>
+            <livewire:djsession-summary :djsession="$djsession"/>
         </div>
 
         <div x-show="activeTab === 'songs'" x-cloak>
-            <template x-if="loaded.songs">
-                <livewire:song-requests :djsessionId="$djsession->id"/>
-            </template>
+            <livewire:song-requests :djsessionId="$djsession->id"/>
         </div>
 
         <div x-show="activeTab === 'tips'" x-cloak>
-            <template x-if="loaded.tips">
-                <div>
-                    <livewire:top-donors :djsessionId="$djsession->id" :viewType="'management'" :key="'management'" />
-                    <livewire:tips-list :djsessionId="$djsession->id"/>
-                </div>
-            </template>
+            <livewire:top-donors :djsessionId="$djsession->id" :viewType="'management'" :key="'tips-management'" />
+            <livewire:tips-list :djsessionId="$djsession->id"/>
         </div>
 
-        <div x-show="activeTab === 'raffle'" x-cloak>
+        <div x-show="activeTab === 'raffles'" x-cloak>
+            <livewire:raffles-management :djsessionId="$djsession->id"  wire:lazy :key="'raffles-management-for-session-'.$djsession->id"/>
         </div>
     </div>
 
-    <x-confirmation-modal wire:model="confirmingSessionDeletion">
+    <x-confirmation-modal wire:model="confirmingSessionDeletion" :key="'confirm-session-deletion'">
         <x-slot name="title">Eliminar sesión</x-slot>
 
         <x-slot name="content">
@@ -156,7 +149,7 @@
             </form>
 
         </x-slot>
-        </x-confirmation-modal>
+    </x-confirmation-modal>
 </div>
 
 

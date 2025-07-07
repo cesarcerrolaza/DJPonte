@@ -46,10 +46,8 @@ class SongRequests extends Component
         $index = collect($this->requests)->search(fn ($r) => $r['id'] === $eventData['id']);
 
         if ($index !== false) {
-            // Si ya existe, actualizar el score
             $this->requests[$index]['score'] = $eventData['score'];
         } else {
-            // Si no existe, añadir la nueva petición
             $this->requests[] = $eventData;
         }
 

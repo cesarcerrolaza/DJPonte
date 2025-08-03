@@ -95,7 +95,7 @@ Route::middleware([
     Route::get('/instagram/connect', [SocialController::class, 'connectInstagram'])
         ->name('instagram.connect');
         Route::get('/instagram/reconnect', [SocialController::class, 'reconnectInstagram'])
-        ->name('instagram.connect');
+        ->name('instagram.reconnect');
     Route::get('/tiktok/connect', [SocialController::class, 'connectTikTok'])
         ->name('tiktok.connect');
 

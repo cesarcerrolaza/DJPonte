@@ -14,7 +14,6 @@
                         <div class="mb-4 p-4 bg-yellow-100 text-yellow-800 border border-yellow-200 rounded">
                             <p class="font-medium">No se pudieron cargar tus publicaciones.</p>
                             <p class="text-sm">Es posible que la conexión con Instagram haya caducado. Por favor, vuelve a conectar tu cuenta para refrescar el acceso.</p>
-                            {{-- Asumiendo que la ruta para conectar se llama 'instagram.connect' --}}
                             <a href="{{ route('instagram.reconnect') }}" class="mt-2 inline-block bg-blue-500 text-white py-1 px-3 rounded text-sm font-bold">
                                 Reconectar Cuenta
                             </a>
@@ -37,14 +36,12 @@
                                 </div>
 
                                 <div class="mt-2">
-                                    {{-- CAMBIO 1: La nueva lógica para comprobar el post activo --}}
                                     @if ($activePost && $activePost->media_id == $post['id'])
                                         <p class="text-sm font-bold text-green-600 text-center py-2">✔️ Publicación Activa</p>
                                     @else
                                         <form action="{{ route('setMonitoredPost') }}" method="POST">
                                             @csrf
 
-                                            {{-- CAMBIO 2: Añadimos todos los datos del post en campos ocultos --}}
                                             <input type="hidden" name="media_id" value="{{ $post['id'] }}">
                                             <input type="hidden" name="platform" value="instagram"> {{-- O la plataforma que corresponda --}}
                                             <input type="hidden" name="caption" value="{{ $post['caption'] ?? '' }}">

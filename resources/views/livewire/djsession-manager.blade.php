@@ -3,7 +3,6 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
         <!-- Left Side: Venue and Session Info -->
         <div class="md:col-span-2 flex items-center space-x-6">
-            <!-- Venue Image with Enhanced Styling -->
             <div class="flex-shrink-0">
                 <img 
                     src="{{ $djsession->image_url }}" 

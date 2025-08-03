@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('social_accounts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relación con users
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('platform'); // Instagram, TikTok, etc.
             $table->string('account_id'); // ID del usuario en la red social
-            $table->string('username'); // Nombre de usuario en la red social
-            $table->text('access_token')->nullable(); // Token de acceso OAuth
-            $table->text('refresh_token')->nullable(); // Token de actualización
+            $table->string('username');
+            $table->text('access_token')->nullable();
+            $table->text('refresh_token')->nullable();
+            $table->timestamp('expires_at')->nullable(); // NUEVO
             $table->timestamps();
 
-            $table->unique(['platform', 'account_id']); // Un usuario no puede tener dos veces la misma red social
- 
+            $table->unique(['platform', 'account_id']); // Un usuario no puede tener múltiples cuentas del mismo tipo
         });
     }
 

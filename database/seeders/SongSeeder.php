@@ -13,18 +13,14 @@ class SongSeeder extends Seeder
      */
     public function run(): void
     {
-        //Song::factory(10)->create();
+        Song::create([
+            'title' => 'TestSong',
+            'artist' => 'TestArtist'
+        ]);
 
-        Song::create(
-            [
-                'title' => 'TestSong',
-                'artist' => 'TestArtist'
-            ],
-            [
-                'title' => 'This is an',
-                'artist' => 'Example'
-            ]
-        );
-
+        Song::create([
+            'title' => 'This is an',
+            'artist' => 'Example'
+        ]);
     }
 }

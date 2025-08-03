@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'api/instagram/webhook' // O la ruta exacta de tu webhook
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -32,8 +32,6 @@
         </div>
 
         <!-- Imagen -->
-        <!-- Imagen -->
-        <!-- Imagen -->
         <div 
         class="relative w-32 h-32 md:w-36 md:h-36"
             x-data="{
@@ -69,7 +67,7 @@
             <input 
                 type="file" 
                 id="image" 
-                wire:model.live="prize_image" {{-- Asegúrate de tener tu wire:model --}}
+                wire:model.live="prize_image"
                 name="image" 
                 class="hidden" 
                 accept="image/*"

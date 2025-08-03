@@ -29,11 +29,18 @@ x-on:session-deleted-reload.window="window.location.reload()"
 @endif
 >
     <div 
-        class="flex items-center justify-between bg-white p-4 rounded-lg shadow-md w-full max-w-5xl mx-auto hover:bg-gray-50 transition-colors duration-200 {{ $role === 'dj' ? 'hover:bg-gray-50 cursor-pointer' : '' }}"
-        @if($role === 'dj') 
+        @if($role === 'user')
+            class="flex items-center justify-between bg-white p-4 rounded-lg shadow-md w-full max-w-5xl mx-auto hover:bg-gray-50 transition-colors duration-200"
+            :class="{
+                'border-2 border-purple-500': formShown === 'song-request',
+                'border-2 border-yellow-400': formShown === 'tip',
+                'border-2 border-pink-500': formShown === 'raffle',
+                'border-2 border-gray-300': formShown === null
+            }"
+        @else
+            class="flex items-center justify-between bg-white p-4 rounded-lg shadow-md w-full max-w-5xl mx-auto hover:bg-gray-50 transition-colors duration-200 border-2 border-pink-500 {{ $role === 'dj' ? 'hover:bg-gray-50 cursor-pointer' : '' }}"
             onclick="window.location='{{ route('djsessions.show', $djsession) }}'" 
             style="cursor: pointer;" 
-            
         @endif
     >
         <!-- Imagen del local -->
@@ -43,9 +50,8 @@ x-on:session-deleted-reload.window="window.location.reload()"
         
         <!-- Info principal -->
         <div class="flex-1">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center">
                 <h2 class="text-xl font-extrabold">{{ $djsession->name }}</h2>
-                <span class="text-gray-400 font-bold text-lg">#{{ $djsession->code }}</span>
             </div>
             <p class="text-purple-600 font-semibold text-sm flex items-center mt-1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,9 +83,10 @@ x-on:session-deleted-reload.window="window.location.reload()"
                 </div>
             @endif
         </div>
-        @if ($role == 'user')
+            
+        <div class="flex flex-col items-end justify-between h-full ml-4">
             <!-- Botón Entrar/Salir y participantes -->
-            <div class="flex flex-col items-end justify-between h-full ml-4">
+            @if($role == 'user')
                 @if($isCurrentDjsession)
                     <x-danger-button wire:click="setCurrent">
                         Salir   
@@ -93,13 +100,15 @@ x-on:session-deleted-reload.window="window.location.reload()"
                         Unirse
                     </x-button>
                 @endif
-                <div class="text-sm text-black mt-4 flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6v4l5-5-5-5v4z"/></svg>
-                    {{ $djsession->current_users }} Participantes
-                </div>
-                
+            @endif
+            <div class="text-sm text-black mt-4 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6v4l5-5-5-5v4z"/></svg>
+                {{ $djsession->current_users }} Participantes
             </div>
-        @endif
+            
+            <!-- Código movido aquí -->
+            <span class="text-gray-400 font-bold text-lg mt-2">#{{ $djsession->code }}</span>
+        </div>
     </div>
 
     @if($showUserOptions)

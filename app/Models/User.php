@@ -74,7 +74,7 @@ class User extends Authenticatable
     }
 
     // Cuentas de redes sociales asociadas al usuario
-    public function socialUsers()
+    public function socialAccounts()
     {
         return $this->hasMany(SocialAccount::class);
     }
@@ -116,6 +116,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_request_at' => 'datetime'
         ];
     }
 

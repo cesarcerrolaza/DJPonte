@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\DjsessionController;
+use App\Http\Controllers\SocialController;
+use App\Http\Controllers\TipController;
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,9 +44,9 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-    Route::get('/djsessions',[\App\Http\Controllers\DjsessionController::class, 'index'])
+    Route::get('/djsessions',[DjsessionController::class, 'index'])
         ->name('djsessions.index');
-    Route::get('/djsessions/search', [\App\Http\Controllers\DjsessionController::class, 'search']) 
+    Route::get('/djsessions/search', [DjsessionController::class, 'search']) 
         ->name('djsessions.search');
     Route::get('/home', function () {
         return view('dashboard');
@@ -58,22 +63,22 @@ Route::middleware([
     'verified',
     'role:user'
 ])->group(function () {
-    Route::get('/djsessions/join/{djsession}', [\App\Http\Controllers\DjsessionController::class, 'join'])
+    Route::get('/djsessions/join/{djsession}', [DjsessionController::class, 'join'])
     ->name('djsessions.join');
-    Route::get('/djsessions/leave/{djsession}', [\App\Http\Controllers\DjsessionController::class, 'leave'])
+    Route::get('/djsessions/leave/{djsession}', [DjsessionController::class, 'leave'])
         ->name('djsessions.leave');
 
-    Route::get('/djsessions/song-request',[\App\Http\Controllers\DjsessionController::class, 'index'])
+    Route::get('/djsessions/song-request',[DjsessionController::class, 'index'])
     ->name('song-request');
 
-    Route::get('/djsessions/tip',[\App\Http\Controllers\DjsessionController::class, 'index'])
+    Route::get('/djsessions/tip',[DjsessionController::class, 'index'])
     ->name('tip');
 
-    Route::get('/djsessions/raffle',[\App\Http\Controllers\DjsessionController::class, 'index'])
+    Route::get('/djsessions/raffle',[DjsessionController::class, 'index'])
     ->name('raffle');
 
-    Route::get('/tips/success', [\App\Http\Controllers\TipController::class, 'success'])->name('tips.success');
-    Route::get('/tips/cancel', [\App\Http\Controllers\TipController::class, 'cancel'])->name('tips.cancel');
+    Route::get('/tips/success', [TipController::class, 'success'])->name('tips.success');
+    Route::get('/tips/cancel', [TipController::class, 'cancel'])->name('tips.cancel');
 
 });
  
@@ -84,6 +89,26 @@ Route::middleware([
     'verified',
     'role:dj'
 ])->group(function () {
-    Route::resource('djsessions', \App\Http\Controllers\DjsessionController::class)
+    Route::resource('djsessions', DjsessionController::class)
     ->only(['show', 'create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::get('/instagram/connect', [SocialController::class, 'connectInstagram'])
+        ->name('instagram.connect');
+        Route::get('/instagram/reconnect', [SocialController::class, 'reconnectInstagram'])
+        ->name('instagram.connect');
+    Route::get('/tiktok/connect', [SocialController::class, 'connectTikTok'])
+        ->name('tiktok.connect');
+
+    Route::get('/social', [SocialController::class, 'showPostGallery']) // Asegura que solo DJs logueados puedan verla
+        ->name('socialManagement');
+    Route::post('/set-monitored-post', [SocialController::class, 'setMonitoredPost'])
+        ->name('setMonitoredPost');
 });
+Route::get('/instagram/callback', [SocialController::class, 'handleInstagramCallback'])
+->name('instagram.callback');
+
+Route::get('/tiktok/callback', [SocialController::class, 'handleTikTokCallback'])
+->name('tiktok.callback');
+
+
+

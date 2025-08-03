@@ -14,9 +14,8 @@
 
     <!-- Info principal -->
     <div class="flex-1">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center">
             <h2 class="text-xl font-extrabold">{{ $djsession->name }}</h2>
-            <span class="text-gray-400 font-bold text-lg">#{{ $djsession->code }}</span>
         </div>
 
         <p class="text-purple-600 font-semibold text-sm flex items-center mt-1">
@@ -32,19 +31,19 @@
         </div>
     </div>
 
-    <!-- Participantes -->
+    <!-- Participantes y código -->
     <div class="flex flex-col items-end justify-between h-full ml-4">
+        <span class="text-gray-400 font-bold text-lg mt-2">#{{ $djsession->code }}</span>
+        @if($role == 'user' && !$isCurrentDjsession)
+            <a href="{{ route('djsessions.join', $djsession) }}" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition">
+                Unirse
+            </a>
+        @endif
         <div class="text-sm text-black mt-4 flex items-center">
             <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M13 7H7v6h6v4l5-5-5-5v4z"/>
             </svg>
             {{ $djsession->current_users }} Participantes
         </div>
-
-        @if($role == 'user' && !$isCurrentDjsession)
-        <a href="{{ route('djsessions.join', $djsession) }}" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition">
-            Unirse
-        </a>
-        @endif
     </div>
 </div>

@@ -1,46 +1,42 @@
 <div class="flex w-full h-16 md:h-20">
-    <!-- Sección morada (logo) -->
     <div class="bg-[#b481ff] w-56 md:w-64 lg:w-72 flex items-center justify-center px-4 py-3">
-        <a href="/" class="flex items-center">
+        <a href="{{ route('home') }}" class="flex items-center">
             <img src="{{ asset('storage/icons/djponte-logo.svg') }}" alt="DJ-PONTE" class="h-10 md:h-12 lg:h-14">
         </a>
     </div>
     
-    <!-- Sección negra (navegación) -->
     <nav class="bg-black flex-1 flex items-center justify-between px-4 md:px-8 py-3 text-white">
-        <!-- Navegación - Ahora centrada -->
         <div class="hidden md:flex items-center space-x-8 mx-auto">
-            <a href="/home" class="p-2 relative group">
-                <img src="{{ asset('storage/icons/home.svg') }}" alt="Inicio" class="h-8 w-8 group-hover:hidden">
-                <img src="{{ asset('storage/icons/home-selected.svg') }}" alt="Inicio seleccionado" class="h-8 w-8 hidden group-hover:block">
+            <a href="{{ route('home') }}" class="p-2 relative group">
+                <img src="{{ asset('storage/icons/home.svg') }}" alt="Inicio" class="h-8 w-8 {{ Route::is('home') ? 'hidden' : 'block' }} group-hover:hidden">
+                <img src="{{ asset('storage/icons/home-selected.svg') }}" alt="Inicio seleccionado" class="h-9 w-9 {{ Route::is('home') ? 'block' : 'hidden' }} group-hover:block">
             </a>
-            <a href="/djsessions" class="p-2 relative group">
-                <img src="{{ asset('storage/icons/djsessions.svg') }}" alt="Sesiones" class="h-8 w-8 group-hover:hidden">
-                <img src="{{ asset('storage/icons/djsessions-selected.svg') }}" alt="Sesiones seleccionadas" class="h-8 w-8 hidden group-hover:block">
+            <a href="{{ route('djsessions.index') }}" class="p-2 relative group">
+                {{-- El comodín '*' hace que se mantenga activo en todas las rutas de djsessions (index, show, etc.) --}}
+                <img src="{{ asset('storage/icons/djsessions.svg') }}" alt="Sesiones" class="h-8 w-8 {{ Route::is('djsessions.*') ? 'hidden' : 'block' }} group-hover:hidden">
+                <img src="{{ asset('storage/icons/djsessions-selected.svg') }}" alt="Sesiones seleccionadas" class="h-11 w-11 {{ Route::is('djsessions.*') ? 'block' : 'hidden' }} group-hover:block">
             </a>
             <a href="/seguidos" class="p-2 relative group">
-                <img src="{{ asset('storage/icons/seguidos.svg') }}" alt="Seguidos" class="h-8 w-8 group-hover:hidden">
-                <img src="{{ asset('storage/icons/seguidos-selected.svg') }}" alt="Seguidos seleccionados" class="h-8 w-8 hidden group-hover:block">
+                <img src="{{ asset('storage/icons/seguidos.svg') }}" alt="Seguidos" class="h-8 w-8 {{ request()->is('seguidos') ? 'hidden' : 'block' }} group-hover:hidden">
+                <img src="{{ asset('storage/icons/seguidos-selected.svg') }}" alt="Seguidos seleccionados" class="h-10 w-10 {{ request()->is('seguidos') ? 'block' : 'hidden' }} group-hover:block">
             </a>
         </div>
         
-        <!-- Versión móvil de los iconos (visible solo en móvil) -->
         <div class="flex md:hidden items-center space-x-6">
-            <a href="/home" class="p-2 relative group">
-                <img src="{{ asset('storage/icons/home.svg') }}" alt="Inicio" class="h-8 w-8 group-hover:hidden">
-                <img src="{{ asset('storage/icons/home-selected.svg') }}" alt="Inicio seleccionado" class="h-8 w-8 hidden group-hover:block absolute top-2 left-2">
+            <a href="{{ route('home') }}" class="p-2 relative group">
+                <img src="{{ asset('storage/icons/home.svg') }}" alt="Inicio" class="h-8 w-8 {{ Route::is('home') ? 'hidden' : 'block' }} group-hover:hidden">
+                <img src="{{ asset('storage/icons/home-selected.svg') }}" alt="Inicio seleccionado" class="h-8 w-8 {{ Route::is('home') ? 'block' : 'hidden' }} group-hover:block absolute top-2 left-2">
             </a>
-            <a href="/djsessions" class="p-2 relative group">
-                <img src="{{ asset('storage/icons/djsessions.svg') }}" alt="Sesiones" class="h-8 w-8 group-hover:hidden">
-                <img src="{{ asset('storage/icons/djsessions-selected.svg') }}" alt="Sesiones seleccionadas" class="h-8 w-8 hidden group-hover:block absolute top-2 left-2">
+            <a href="{{ route('djsessions.index') }}" class="p-2 relative group">
+                <img src="{{ asset('storage/icons/djsessions.svg') }}" alt="Sesiones" class="h-8 w-8 {{ Route::is('djsessions.*') ? 'hidden' : 'block' }} group-hover:hidden">
+                <img src="{{ asset('storage/icons/djsessions-selected.svg') }}" alt="Sesiones seleccionadas" class="h-8 w-8 {{ Route::is('djsessions.*') ? 'block' : 'hidden' }} group-hover:block absolute top-2 left-2">
             </a>
             <a href="/seguidos" class="p-2 relative group">
-                <img src="{{ asset('storage/icons/seguidos.svg') }}" alt="Seguidos" class="h-8 w-8 group-hover:hidden">
-                <img src="{{ asset('storage/icons/seguidos-selected.svg') }}" alt="Seguidos seleccionados" class="h-8 w-8 hidden group-hover:block absolute top-2 left-2">
+                <img src="{{ asset('storage/icons/seguidos.svg') }}" alt="Seguidos" class="h-8 w-8 {{ request()->is('seguidos') ? 'hidden' : 'block' }} group-hover:hidden">
+                <img src="{{ asset('storage/icons/seguidos-selected.svg') }}" alt="Seguidos seleccionados" class="h-8 w-8 {{ request()->is('seguidos') ? 'block' : 'hidden' }} group-hover:block absolute top-2 left-2">
             </a>
         </div>
         
-        <!-- Barra de búsqueda - Ahora más ancha -->
         <form action="{{ route('djsessions.search') }}" method="GET">
             <div class="flex items-center bg-white text-black px-4 py-2 rounded-full w-48 sm:w-64 md:w-80 lg:w-96">
                 <button type="submit" class="focus:outline-none border-none bg-transparent p-0 mr-2">

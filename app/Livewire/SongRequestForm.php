@@ -18,7 +18,7 @@ class SongRequestForm extends Component
     public $songSuggestions = [];
     public $selectedSong = null;
     public $topSongs = [];
-    public $userId = null;
+    public $user = null;
     public $userLastRequestAt = null;
     public $songRequestTimeout = null;
 
@@ -27,8 +27,12 @@ class SongRequestForm extends Component
     public function mount(Request $request, $djsessionId, $songRequestTimeout)
     {
         $this->djsessionId = $djsessionId;
-        $this->userId = $request->user()->id;
-        $this->userLastRequestAt = $request->user()->last_request_at;
+        $this->user = $request->user();
+        if ($this->user) {
+            // Forzamos la obtención de los datos más recientes desde la BD
+            $this->user = User::find($this->user->id);
+            $this->userLastRequestAt = $this->user->last_request_at->toIso8601String();
+        }
         $this->songRequestTimeout = $songRequestTimeout;
         $this->loadTopSongs();
     }
@@ -59,14 +63,16 @@ class SongRequestForm extends Component
         if ($songRequest) {
             $songRequest->score = $songRequest->score + 1;
             $songRequest->save();
-            $this->userLastRequestAt = now();
-            User::where('id', $this->userId)->update(['last_request_at' => $this->userLastRequestAt]);
+            $this->user->last_request_at = now();
+            $this->user->save();
+            $this->userLastRequestAt = $this->user->last_request_at->toIso8601String(); // Usar un formato estándar
+
 
 
             broadcast(new NewSongRequest($songRequest));
             
             $this->loadTopSongs();
-            $this->dispatch("song-requested");
+            $this->dispatch("song-requested", timeout: $this->songRequestTimeout);
             $this->dispatch("voted-successfully.{$songRequestId}");
         }
     }
@@ -90,8 +96,10 @@ class SongRequestForm extends Component
             'songId' => $this->selectedSong
         ]);
 
-        $this->userLastRequestAt = now();
-        User::where('id', $this->userId)->update(['last_request_at' => $this->userLastRequestAt]);
+        $this->user->last_request_at = now();
+        $this->user->save();
+        $this->userLastRequestAt = $this->user->last_request_at->toIso8601String(); // Usar un formato estándar
+
         
         // Notificar éxito
         session()->flash('message', '¡Solicitud enviada!');
@@ -99,7 +107,7 @@ class SongRequestForm extends Component
         // Limpiar el formulario
         $this->reset(['songName', 'artistName', 'selectedSong', 'songSuggestions']);
         
-        $this->dispatch("song-requested");
+        $this->dispatch("song-requested", timeout: $this->songRequestTimeout);
         // Recargar las canciones top
         $this->loadTopSongs();
     }

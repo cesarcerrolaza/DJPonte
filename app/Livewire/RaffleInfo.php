@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Raffle;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class RaffleInfo extends Component

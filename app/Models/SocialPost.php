@@ -9,8 +9,13 @@ class SocialPost extends Model
     //
     protected $fillable = [
         'djsession_id',
+        'social_account_id',
         'platform',
-        'media_id'
+        'media_id',
+        'is_active',
+        'caption',
+        'media_url',
+        'permalink',
     ];
 
     //------------------RELACIONES------------------//
@@ -19,6 +24,12 @@ class SocialPost extends Model
     public function djsession()
     {
         return $this->belongsTo(Djsession::class);
+    }
+
+    // Cuenta social asociada
+    public function socialAccount()
+    {
+        return $this->belongsTo(SocialAccount::class);
     }
 
     // Comentarios en un post

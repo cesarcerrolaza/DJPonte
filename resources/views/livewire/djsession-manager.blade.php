@@ -10,6 +10,14 @@
                     alt="Imagen Djsession" 
                     class="w-32 h-32 md:w-40 md:h-40 object-cover rounded-xl shadow-lg ring-4 ring-purple-100"
                 >
+                <div class="flex justify-center mt-2 space-x-2">
+                    <a href="/instagram/connect" class="p-2 rounded-full bg-purple-50 hover:bg-purple-100 transition" title="Conectar Instagram">
+                        <img src="{{ asset('storage/icons/instagram.svg') }}" alt="Instagram" class="w-5 h-5">
+                    </a>
+                    <a href="/tiktok/connect" class="p-2 rounded-full bg-purple-50 hover:bg-purple-100 transition" title="Conectar TikTok">
+                        <img src="{{ asset('storage/icons/tiktok.svg') }}" alt="TikTok" class="w-5 h-5">
+                    </a>
+                </div>
             </div>
 
             <!-- Session Details -->
@@ -117,16 +125,16 @@
         </div>
 
         <div x-show="activeTab === 'songs'" x-cloak>
-            <livewire:song-requests :djsessionId="$djsession->id"/>
+            <livewire:song-requests :djsessionId="$djsession->id" lazy/>
         </div>
 
         <div x-show="activeTab === 'tips'" x-cloak>
-            <livewire:top-donors :djsessionId="$djsession->id" :viewType="'management'" :key="'tips-management'" />
-            <livewire:tips-list :djsessionId="$djsession->id"/>
+            <livewire:top-donors :djsessionId="$djsession->id" :viewType="'management'" :key="'tips-management'"  lazy/>
+            <livewire:tips-list :djsessionId="$djsession->id" lazy/>
         </div>
 
         <div x-show="activeTab === 'raffles'" x-cloak>
-            <livewire:raffles-management :djsessionId="$djsession->id"  wire:lazy :key="'raffles-management-for-session-'.$djsession->id"/>
+            <livewire:raffles-management :djsessionId="$djsession->id"  wire:lazy :key="'raffles-management-for-session-'.$djsession->id" lazy/>
         </div>
     </div>
 

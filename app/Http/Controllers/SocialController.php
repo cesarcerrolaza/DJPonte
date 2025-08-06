@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 use App\Models\SocialPost;
+use App\Models\SocialAccount;
 
 
 
@@ -24,7 +25,6 @@ class SocialController extends Controller
         'pages_read_engagement',
         'business_management',
         'pages_manage_metadata', // <-- Permiso para suscribirse a 'feed'
-        'pages_messaging'      // <-- Permiso para suscribirse a 'messages'
     ];
 
     public function __construct(InstagramService $instagramService)
@@ -107,11 +107,17 @@ class SocialController extends Controller
 
             $socialAccount = $user->socialAccounts()->where('platform', 'instagram')->first();
             if ($socialAccount) {
-                $response = $this->instagramService->subscribeToWebhook($socialAccount->access_token);
-                if ($response->failed()) {
-                    Log::error('Error al suscribir la página al webhook: ' . $response->body());
-                } else {
-                    Log::info('Suscripción al webhook realizada con éxito.');
+                try{
+                    $response = $this->instagramService->subscribeToWebhook($socialAccount->access_token);
+                    if ($response->failed()) {
+                        Log::error('Error al suscribir la página al webhook: ' . $response->body());
+                    } else {
+                        Log::info('Suscripción al webhook realizada con éxito.');
+                    }
+                }
+                catch (\Exception $e) {
+                    Log::error('Excepción al suscribir al webhook: ' . $e->getMessage());
+                    return redirect()->route('socialManagement')->with('error', 'Error al suscribir al webhook de Instagram. Por favor, inténtalo de nuevo más tarde.');
                 }
             }
             return redirect()->route('socialManagement')->with('success', '¡Cuenta de Instagram conectada con éxito!');
@@ -155,14 +161,6 @@ class SocialController extends Controller
             $activePost = SocialPost::where('djsession_id', $activeDjSession->id ?? null)
                                     ->where('is_active', true)
                                     ->first();
-            if ($activePost) {
-                $response = $this->instagramService->subscribeToWebhook($socialAccount->access_token);
-                if ($response->failed()) {
-                    Log::error('Error al suscribir la página al webhook: ' . $response->body());
-                } else {
-                    Log::info('Suscripción al webhook realizada con éxito.');
-                }
-            }
         }
         else {
             $activePost = null;
@@ -212,4 +210,106 @@ class SocialController extends Controller
 
         return back()->with('success', '¡Publicación seleccionada con éxito!');
     }
+
+
+    
+    /**
+     * Maneja la solicitud de eliminación de datos de usuario enviada por Meta.
+     */
+    public function handleDataDeletion(Request $request)
+    {
+        $signedRequest = $request->input('signed_request');
+
+        if (!$signedRequest) {
+            Log::warning('Data deletion request received without a signed_request.');
+            return response()->json(['error' => 'Invalid request'], 400);
+        }
+
+        // Decodificamos la petición firmada para obtener los datos
+        $data = $this->parseSignedRequest($signedRequest);
+
+        if (!$data) {
+            Log::error('Failed to parse signed_request for data deletion.');
+            return response()->json(['error' => 'Invalid signed_request'], 400);
+        }
+
+        $userId = $data['user_id'];
+
+        // --- Lógica de Eliminación ---
+        // Buscamos la cuenta social vinculada a este ID de usuario de la plataforma
+        $socialAccount = SocialAccount::where('account_id', $userId)->first();
+
+        if ($socialAccount) {
+            // Obtenemos el usuario de nuestra aplicación a través de la relación
+            $user = $socialAccount->user;
+
+            if ($user) {
+                $user->delete();
+                Log::info("User data deleted successfully for platform user_id: {$userId}");
+            }
+        }
+
+        // --- Respuesta de Confirmación para Meta ---
+        // Generamos un código de confirmación y una URL para que Meta rastree el estado.
+        $confirmationCode = 'user_deleted_' . $userId;
+        $statusUrl = route('data-deletion.status', ['confirmation_code' => $confirmationCode]);
+
+        return response()->json([
+            'url' => $statusUrl,
+            'confirmation_code' => $confirmationCode,
+        ]);
+    }
+
+    /**
+     * Decodifica y verifica la petición firmada de Meta.
+     *
+     * @param string $signedRequest
+     * @return array|null
+     */
+    private function parseSignedRequest(string $signedRequest): ?array
+    {
+        list($encodedSig, $payload) = explode('.', $signedRequest, 2);
+
+        // Decodificar la firma
+        $sig = $this->base64UrlDecode($encodedSig);
+        // Decodificar los datos
+        $data = json_decode($this->base64UrlDecode($payload), true);
+
+        // Verificar el algoritmo
+        if (strtoupper($data['algorithm']) !== 'HMAC-SHA256') {
+            Log::error('Unknown algorithm received in signed_request: ' . $data['algorithm']);
+            return null;
+        }
+
+        // Verificar la firma
+        $expectedSig = hash_hmac('sha256', $payload, env('FACEBOOK_APP_SECRET'), true);
+
+        if (hash_equals($expectedSig, $sig)) {
+            return $data;
+        }
+
+        Log::warning('Bad Signed JSON signature!');
+        return null;
+    }
+
+    /**
+     * Función de ayuda para decodificar en base64 URL-safe.
+     */
+    private function base64UrlDecode(string $input): string
+    {
+        return base64_decode(strtr($input, '-_', '+/'));
+    }
+
+    /**
+     * (Opcional) Una ruta para que Meta compruebe el estado de la eliminación.
+     */
+    public function showDeletionStatus(Request $request, $confirmation_code)
+    {
+        // Aquí podrías tener lógica para confirmar que la eliminación se completó.
+        // Por ahora, una respuesta simple es suficiente.
+        return response()->json([
+            'status' => 'User data deletion complete.',
+        ]);
+    }
+
 }

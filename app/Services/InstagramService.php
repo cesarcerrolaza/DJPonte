@@ -91,7 +91,7 @@ class InstagramService
 
             $response = Http::withToken($pageAccessToken)
                 ->post("{$this->apiBaseUrl}/{$pageId}/subscribed_apps", [
-                    'subscribed_fields' => ['feed', 'messages']
+                    'subscribed_fields' => ['feed']
                 ]);
 
             // Devolvemos el objeto de respuesta original
@@ -99,10 +99,7 @@ class InstagramService
 
         } catch (\Exception $e) {
             Log::error('Excepción al suscribirse al webhook de Instagram: ' . $e->getMessage());
-            // En caso de excepción, devolvemos una respuesta de error simulada como Illuminate\Http\Client\Response
-            return Response::make([
-                'error' => 'Error al suscribirse al webhook de Instagram',
-            ], 500);
+            throw $e;
         }
 }
 

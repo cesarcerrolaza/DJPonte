@@ -19,7 +19,7 @@ class SongSeeder extends Seeder
         ]);
 
         Song::create([
-            'title' => 'This is an',
+            'title' => 'This is an example',
             'artist' => 'Example'
         ]);
     }

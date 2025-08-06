@@ -18,7 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->validateCsrfTokens(except: [
-            'api/instagram/webhook' // O la ruta exacta de tu webhook
+            'api/instagram/webhook',
+            'api/data-deletion'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

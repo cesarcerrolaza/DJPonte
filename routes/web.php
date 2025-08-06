@@ -110,5 +110,9 @@ Route::get('/instagram/callback', [SocialController::class, 'handleInstagramCall
 Route::get('/tiktok/callback', [SocialController::class, 'handleTikTokCallback'])
 ->name('tiktok.callback');
 
+Route::get('/policy', function () {
+    return view('policy');
+})->name('policy');
+
 
 

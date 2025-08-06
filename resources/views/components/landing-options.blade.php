@@ -76,8 +76,7 @@
             <!-- Términos y condiciones -->
             <div class="text-sm text-gray-600 text-center">
                 Al continuar, confirmas que estás de acuerdo con los 
-                <a href="#" class="text-black underline">Términos de uso</a> de DJ-PONTE y que has leído la 
-                <a href="#" class="text-black underline">Política de privacidad</a> de DJ-PONTE.
+                <a href=" {{ route('policy') }}" class="text-black underline">Política de privacidad</a> de DJ-PONTE.
             </div>
         </div>
     </div>

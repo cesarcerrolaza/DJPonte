@@ -5,20 +5,26 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if (!Auth::user()->socialAccounts()->where('platform', 'instagram')->exists())
+                <div class="mb-4 p-4 bg-yellow-100 text-yellow-800 border border-yellow-200 rounded">
+                    <p class="font-medium">No se pudieron cargar tus publicaciones.</p>
+                    <p class="text-sm">Es posible que la conexión con Instagram haya caducado. Por favor, vuelve a conectar tu cuenta para refrescar el acceso.</p>
+                    <a href="{{ route('instagram.reconnect') }}" class="mt-2 inline-block bg-blue-500 text-white py-1 px-3 rounded text-sm font-bold">
+                        Reconectar Cuenta
+                    </a>
+                </div>
+            @else
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4 p-4   border rounded">
+                    <p class="font-medium">Pulsa para conectar con otra cuenta.</p>
+                    <a href="{{ route('instagram.reconnect') }}" class="mt-2 inline-block bg-blue-500 text-white py-1 px-3 rounded text-sm font-bold">
+                        Reconectar Cuenta
+                    </a>
+                </div>
+            @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
 
                     <h3 class="text-lg font-medium mb-4">Selecciona la publicación para las peticiones</h3>
-
-                    @if (empty($posts) && Auth::user()->socialAccounts()->where('platform', 'instagram')->exists())
-                        <div class="mb-4 p-4 bg-yellow-100 text-yellow-800 border border-yellow-200 rounded">
-                            <p class="font-medium">No se pudieron cargar tus publicaciones.</p>
-                            <p class="text-sm">Es posible que la conexión con Instagram haya caducado. Por favor, vuelve a conectar tu cuenta para refrescar el acceso.</p>
-                            <a href="{{ route('instagram.reconnect') }}" class="mt-2 inline-block bg-blue-500 text-white py-1 px-3 rounded text-sm font-bold">
-                                Reconectar Cuenta
-                            </a>
-                        </div>
-                    @endif
 
 
                     @if (session('success'))
@@ -56,7 +62,7 @@
                                 </div>
                             </div>
                         @empty
-                            <p>No se encontraron publicaciones recientes o no se pudo conectar con la API.</p>
+                            <p>No se encontraron publicaciones recientes.</p>
                         @endforelse
                     </div>
 

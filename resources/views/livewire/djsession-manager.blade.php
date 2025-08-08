@@ -13,9 +13,11 @@
                     <a href="/instagram/connect" class="p-2 rounded-full bg-purple-50 hover:bg-purple-100 transition" title="Conectar Instagram">
                         <img src="{{ asset('storage/icons/instagram.svg') }}" alt="Instagram" class="w-5 h-5">
                     </a>
+                    <!--
                     <a href="/tiktok/connect" class="p-2 rounded-full bg-purple-50 hover:bg-purple-100 transition" title="Conectar TikTok">
                         <img src="{{ asset('storage/icons/tiktok.svg') }}" alt="TikTok" class="w-5 h-5">
                     </a>
+                    -->
                 </div>
             </div>
 

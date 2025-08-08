@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('username');
             $table->string('platform');
             $table->foreignId('djsession_id')->constrained()->onDelete('cascade');
-            $table->timestamp('last_request_at');
+            $table->timestamp('last_request_at')->nullable();
             $table->timestamps();
         });
     }

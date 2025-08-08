@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('donors', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');       // quien da la propina
-            $table->foreignId('djsession_id')->nullable()->constrained()->onDelete('set null');  // en qué djsession se da
-            $table->integer('amount');     // importe en céntimos
-            $table->string('currency');    // p.ej. 'eur'
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('djsession_id')->nullable()->constrained()->onDelete('set null');
+            $table->integer('amount');
+            $table->string('currency');
             $table->timestamps();
         });
     }

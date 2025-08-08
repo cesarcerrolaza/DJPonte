@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('tips', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');       // quien da la propina
-            $table->foreignId('dj_id')->constrained('users')->onDelete('cascade');       // a quien se le da la propina
-            $table->foreignId('djsession_id')->nullable()->constrained()->onDelete('set null');  // en qué djsession se da
-            $table->foreignId('song_id')->nullable()->constrained()->onDelete('set null'); // cancion asociada a la propina
-            $table->string('custom_title')->nullable();     // título de la canción
-            $table->string('custom_artist')->nullable();    // artista de la canción
-            $table->integer('amount');     // importe en céntimos
-            $table->string('currency');    // p.ej. 'eur'
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('dj_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('djsession_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('song_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('custom_title')->nullable();
+            $table->string('custom_artist')->nullable();
+            $table->integer('amount');
+            $table->string('currency');
             $table->string('stripe_session_id')->nullable();
             $table->enum('status', ['pending','paid','failed'])->default('pending');
-            $table->string('description')->nullable(); // descripción de la propina
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

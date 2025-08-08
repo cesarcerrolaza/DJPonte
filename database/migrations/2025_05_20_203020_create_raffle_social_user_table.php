@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('raffle_id')->constrained()->onDelete('cascade');
             $table->foreignId('social_user_id')->constrained()->onDelete('cascade');
 
-            // Control de duplicados
             $table->unique(['raffle_id', 'social_user_id']); // Un usuario solo puede participar una vez por sorteo
 
             $table->timestamps();

@@ -21,7 +21,7 @@ class VerifyFacebookSignature
             abort(403, 'Signature not found.');
         }
 
-        $hash = hash_hmac('sha256', $request->getContent(), env('INSTAGRAM_APP_SECRET'), false);
+        $hash = hash_hmac('sha256', $request->getContent(), config('services.instagram.app_secret'));
 
         if (!hash_equals('sha256='.$hash, $signature)) {
             Log::warning('Invalid signature', [

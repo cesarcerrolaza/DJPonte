@@ -41,7 +41,7 @@ class InstagramWebhookController extends Controller
 
     public function handleVerificationRequest(Request $request)
     {
-        if ($request->input('hub_verify_token') === env('META_VERIFY_TOKEN')) {
+        if ($request->input('hub_verify_token') === config('services.meta.verify_token')) {
             return response($request->input('hub_challenge'), 200);
         };
         return response()->json(['error' => 'Verification failed'], 403);

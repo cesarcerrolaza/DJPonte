@@ -148,8 +148,8 @@ Route::get('/generate-test-command', function () {
     ]);
 
     // Firma con la clave secreta de la app
-    $signature = hash_hmac('sha256', $payload, env('INSTAGRAM_APP_SECRET'));
-    $appUrl = env('APP_URL') . '/api/instagram/webhook';
+    $signature = hash_hmac('sha256', $payload, config('services.instagram.app_secret'));
+    $appUrl = config('app.url') . '/api/instagram/webhook';
 
 
 

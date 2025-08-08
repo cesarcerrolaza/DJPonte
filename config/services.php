@@ -41,10 +41,19 @@ return [
     ],
 
 
+    'meta' => [
+        'verify_token' => env('META_VERIFY_TOKEN'),
+    ],
+
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'app_secret' => env('FACEBOOK_APP_SECRET'),
         'redirect' => env('FACEBOOK_REDIRECT_URI'),
+    ],
+
+    'instagram' => [
+        'app_secret' => env('INSTAGRAM_APP_SECRET'),
     ],
 
 ];

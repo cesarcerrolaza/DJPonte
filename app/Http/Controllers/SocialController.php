@@ -282,7 +282,7 @@ class SocialController extends Controller
         }
 
         // Verificar la firma
-        $expectedSig = hash_hmac('sha256', $payload, env('FACEBOOK_APP_SECRET'), true);
+        $expectedSig = hash_hmac('sha256', $payload, config('services.facebook.app_secret'), true);
 
         if (hash_equals($expectedSig, $sig)) {
             return $data;

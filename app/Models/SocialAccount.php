@@ -34,6 +34,13 @@ class SocialAccount extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Relación con el modelo SocialPost.
+     */
+    public function socialPosts(){
+        return $this->hasMany(SocialPost::class);
+    }
+
     //------------------METODOS------------------//
 
     /**

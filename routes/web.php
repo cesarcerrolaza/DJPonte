@@ -114,5 +114,54 @@ Route::get('/policy', function () {
     return view('policy');
 })->name('policy');
 
+// Ruta temporal para generar el comando de prueba del webhook
+Route::get('/generate-test-command', function () {
+    $user = Auth::user();
+    $socialAccount = $user->socialAccounts()->where('platform', 'instagram')->first();
+    if (!$socialAccount) {
+        return 'Por favor, conecta primero tu cuenta de Instagram en la página de gestión social.';
+    }
+    
+    $activePost = $socialAccount->socialPosts()->where('is_active', true)->first();
+
+    if (!$activePost) {
+        return 'Por favor, selecciona primero un post activo en la página de gestión social.';
+    }
+
+    // Payload del webhook con datos reales
+    $payload = json_encode([
+        'object' => 'instagram',
+        'entry' => [[
+            'id' => $activePost->socialAccount->account_id,
+            'time' => time(),
+            'changes' => [[
+                'field' => 'comments',
+                'value' => [
+                    'from' => ['id' => '123456789', 'username' => 'test_reviewer'],
+                    'media' => ['id' => $activePost->media_id, 'media_product_type' => 'FEED'],
+                    'id' => '987654321',
+                    'parent_id' => '1231231234',
+                    'text' => 'This is an example.'
+                ]
+            ]]
+        ]]
+    ]);
+
+    // Firma con la clave secreta de la app
+    $signature = hash_hmac('sha256', $payload, env('INSTAGRAM_APP_SECRET'));
+    $appUrl = env('APP_URL') . '/api/instagram/webhook';
+
+
+
+    // Comando curl
+    $command = "curl -X POST \"{$appUrl}\" ^\n" .
+               "-H \"Content-Type: application/json\" ^\n" .
+               "-H \"X-Hub-Signature-256: sha256={$signature}\" ^\n" .
+               "-d '{$payload}'";
+
+    return '<pre>' . e($command) . '</pre>';
+
+})->middleware('auth');
+
 
 

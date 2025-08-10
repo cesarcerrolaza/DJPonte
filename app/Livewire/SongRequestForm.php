@@ -31,7 +31,7 @@ class SongRequestForm extends Component
         if ($this->user) {
             // Forzamos la obtención de los datos más recientes desde la BD
             $this->user = User::find($this->user->id);
-            $this->userLastRequestAt = $this->user->last_request_at->toIso8601String();
+            $this->userLastRequestAt = $this->user->last_request_at?->toIso8601String();
         }
         $this->songRequestTimeout = $songRequestTimeout;
         $this->loadTopSongs();
@@ -65,7 +65,7 @@ class SongRequestForm extends Component
             $songRequest->save();
             $this->user->last_request_at = now();
             $this->user->save();
-            $this->userLastRequestAt = $this->user->last_request_at->toIso8601String(); // Usar un formato estándar
+            $this->userLastRequestAt = $this->user->last_request_at?->toIso8601String(); // Usar un formato estándar
 
 
 
@@ -98,7 +98,7 @@ class SongRequestForm extends Component
 
         $this->user->last_request_at = now();
         $this->user->save();
-        $this->userLastRequestAt = $this->user->last_request_at->toIso8601String(); // Usar un formato estándar
+        $this->userLastRequestAt = $this->user->last_request_at?->toIso8601String(); // Usar un formato estándar
 
         
         // Notificar éxito

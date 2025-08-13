@@ -9,6 +9,9 @@ use App\Models\Djsession;
 use App\Models\SocialUser;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @mixin IdeHelperRaffle
+ */
 class Raffle extends Model
 {
     use HasFactory;

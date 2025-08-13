@@ -32,7 +32,7 @@ class DjsessionCard extends Component
         $this->djsession = $djsession;
         $this->location = $location;
         $this->djName = $djName ?? 'DJ Anonymus';
-        $this->djAvatar = $djAvatar ?? 'storage/users/default-avatar.jpg';
+        $this->djAvatar = $djAvatar ?? 'storage/users/default.png';
         $this->role = $role;
         $this->showUserOptions = $role === 'user';
         $this->isCurrentDjsession = true;
@@ -105,8 +105,6 @@ class DjsessionCard extends Component
                 $this->isCurrentDjsession = $this->djsession->active && $this->isCurrentDjsession;
             }
         }
-        // Actualizar la lista de peticiones
-        //$this->loadRequests($eventData['djsession_id']);
     }
 
     public function djsessionDeleted()
@@ -118,16 +116,12 @@ class DjsessionCard extends Component
     public function showAction($type){
         switch ($type) {
             case 'song-request':
-                // Lógica para solicitar canciones
-                //$this->emit('openSongRequestModal');
                 $this->actionShown = 'song-request';
                 break;
             case 'tip':
-                // Lógica para propinas
                 $this->actionShown = 'tip';
                 break;
             case 'raffle':
-                // Lógica para sorteos
                 $this->emit('openRaffleModal');
                 break;
         }

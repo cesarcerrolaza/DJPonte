@@ -64,7 +64,6 @@ x-on:session-deleted-reload.window="window.location.reload()"
                 <div class="flex items-center mt-2">
                     <img src="{{ asset($djAvatar) }}" alt="{{ $djName }}" class="w-6 h-6 rounded-full mr-2">
                     <span class="text-sm font-semibold">{{ $djName }}</span>
-                    <button wire:click="followDj" class="ml-2 text-xs border px-2 py-0.5 rounded hover:bg-gray-100">Seguir</button>
                 </div>
             
                 <div class="flex space-x-2 mt-4">

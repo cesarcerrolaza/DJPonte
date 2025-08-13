@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use App\Events\NewSongRequest;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @mixin IdeHelperSongRequest
+ */
 class SongRequest extends Model
 {
 

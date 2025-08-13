@@ -8,7 +8,7 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Log;
 
-class DjSessionManager extends Component
+class DjsessionManager extends Component
 {
 
     //Sesion

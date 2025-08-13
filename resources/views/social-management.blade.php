@@ -2,7 +2,7 @@
 
 @extends('layouts/app')
 @section('content')
-
+<div class="p-6">
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if (!Auth::user()->socialAccounts()->where('platform', 'instagram')->exists())
@@ -70,4 +70,5 @@
             </div>
         </div>
     </div>
+</div>
 @endsection

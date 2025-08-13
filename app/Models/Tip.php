@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin IdeHelperTip
+ */
 class Tip extends Model
 {
     protected $fillable = [

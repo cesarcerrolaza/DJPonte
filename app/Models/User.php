@@ -14,12 +14,11 @@ use Laravel\Cashier\Billable;
 /**
  * @mixin \Illuminate\Database\Eloquent\Builder
  * @mixin \Laravel\Cashier\Billable
+ * @mixin IdeHelperUser
  */
 class User extends Authenticatable
 {
     use HasApiTokens;
-
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
@@ -61,43 +60,36 @@ class User extends Authenticatable
 
     //------------------RELACIONES------------------//
 
-    // Sesiones DJ creadas por el usuario dj
     public function djsessions()
     {
         return $this->hasMany(Djsession::class);
     }
 
-    // Sesion a la que se ha unido el usuario
     public function djsessionActive()
     {
         return $this->belongsTo(Djsession::class, 'djsession_id');
     }
 
-    // Cuentas de redes sociales asociadas al usuario
     public function socialAccounts()
     {
         return $this->hasMany(SocialAccount::class);
     }
 
-    // Donaciones del usuario
     public function tips()
     {
         return $this->hasMany(Tip::class, 'user_id');
     }
 
-    // Sorteos creados como DJ
     public function rafflesCreated()
     {
         return $this->hasMany(Raffle::class, 'dj_id');
     }
 
-    // Sorteos ganados
     public function rafflesWon()
     {
         return $this->morphMany(Raffle::class, 'winner');
     }
 
-    // Sorteos en los que ha participado
     public function rafflesParticipated()
     {
         return $this->belongsToMany(Raffle::class, 'raffle_user')
@@ -119,6 +111,30 @@ class User extends Authenticatable
             'last_request_at' => 'datetime'
         ];
     }
+
+    /**
+     * Get the user's profile photo URL.
+     *
+     * @return string
+     */
+    public function getProfilePhotoUrlAttribute()
+    {
+        return $this->profile_photo_path
+            ? asset($this->profile_photo_path)
+            : $this->defaultProfilePhotoUrl();
+    }
+
+    /**
+     * Get the default profile photo URL if no profile photo has been uploaded.
+     *
+     * @return string
+     */
+    protected function defaultProfilePhotoUrl()
+    {
+        return 'storage/users/default.png';
+    }
+
+
 
     //------------------EVENTOS------------------//
 }

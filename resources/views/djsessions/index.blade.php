@@ -1,6 +1,7 @@
 @extends('layouts/app')
 
 @section('content')
+<div class="p-6">
     @if($djsessionActive)
         {{-- TÍTULO PARA LA SESIÓN ACTIVA --}}
         <h2 class="text-2xl font-black text-pink-600 mb-4">Sesión Activa</h2>
@@ -54,5 +55,6 @@
             <h1 class="text-2xl font-bold">No hay sesiones activas</h1>
         </div>
     @endif
-    
+</div>
+
 @endsection

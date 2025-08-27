@@ -3,12 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @mixin IdeHelperDjsession
  */
 class Djsession extends Model
 {
+
+    use HasFactory;
+
     protected $fillable = [
         'code',
         'name',

@@ -1,7 +1,7 @@
 @extends('layouts/app')
 
 @section('content')
-<div class="p-6 bg-gray-100">
+<div class="p-6">
     @foreach($djsessions as $djsession)
         @include('components.djsession-card', [
             'djsession' => $djsession,

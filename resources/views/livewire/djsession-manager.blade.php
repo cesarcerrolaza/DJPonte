@@ -132,6 +132,9 @@
         <div x-show="activeTab === 'tips'" x-cloak>
             <livewire:top-donors :djsessionId="$djsession->id" :viewType="'management'" :key="'tips-management'"  lazy/>
             <livewire:tips-list :djsessionId="$djsession->id" lazy/>
+            <a href="{{ route('stripe.connect') }}" class="btn btn-primary">
+                Conectar con Stripe
+            </a>
         </div>
 
         <div x-show="activeTab === 'raffles'" x-cloak>

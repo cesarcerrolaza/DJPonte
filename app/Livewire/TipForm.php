@@ -69,6 +69,10 @@ class TipForm extends Component
             'description'    => $this->description,
         ]);
 
+        if ($this->djsession->dj->stripe_id === null) {
+            session()->flash('error', 'El DJ no ha configurado su cuenta de Stripe. No es posible procesar la propina en este momento.');
+            return;
+        }
         // Configura la API key de Stripe
         Stripe::setApiKey(config('cashier.secret'));
         $user = Auth::user();
@@ -78,16 +82,24 @@ class TipForm extends Component
         $session = Session::create([
             'payment_method_types' => ['card'],
             'mode' => 'payment',
-            'line_items' => [[
-                'price_data' => [
-                    'currency' => 'eur',
-                    'unit_amount' => $tip->amount,
-                    'product_data' => [
-                        'name' => "Propina para {$this->djsession->name}",
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'currency' => 'eur',
+                        'unit_amount' => $tip->amount,
+                        'product_data' => [
+                            'name' => "Propina para {$this->djsession->name}",
+                        ],
                     ],
+                    'quantity' => 1,
+                ]
+            ],
+            'payment_intent_data' => [
+                'application_fee_amount' => intval($tip->amount * 0.10), // 10% de comisión
+                'transfer_data' => [
+                    'destination' => $this->djsession->dj->stripe_id,
                 ],
-                'quantity' => 1,
-            ]],
+            ],
             'metadata' => [
                 'tip_id' => $tip->id,
             ],

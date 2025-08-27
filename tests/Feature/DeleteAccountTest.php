@@ -13,6 +13,7 @@ class DeleteAccountTest extends TestCase
 {
     use RefreshDatabase;
 
+
     public function test_user_accounts_can_be_deleted(): void
     {
         if (! Features::hasAccountDeletionFeatures()) {
@@ -20,6 +21,11 @@ class DeleteAccountTest extends TestCase
         }
 
         $this->actingAs($user = User::factory()->create());
+
+        // Evitar llamada real a Stripe
+        $this->partialMock(User::class, function ($mock) {
+            $mock->shouldReceive('deleteStripeCustomer')->andReturnTrue();
+        });
 
         $component = Livewire::test(DeleteUserForm::class)
             ->set('password', 'password')

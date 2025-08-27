@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstagramWebhookController;
-use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\StripeController;
 use App\Http\Middleware\VerifyFacebookSignature;
 use App\Http\Controllers\SocialController;
 
@@ -12,11 +12,11 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/instagram/webhook', [InstagramWebhookController::class, 'handle'])
-    ->middleware(VerifyFacebookSignature::class);
+    ->middleware(VerifyFacebookSignature::class)->name('instagram.webhook');
 
-Route::get('/instagram/webhook', [InstagramWebhookController::class, 'handle']);
+Route::get('/instagram/webhook', [InstagramWebhookController::class, 'handle'])->name('instagram.webhook');
 
-Route::match(['get', 'post'], '/stripe/webhook',  [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
+Route::match(['get', 'post'], '/stripe/webhook',  [StripeController::class, 'handle'])->name('stripe.webhook');
 
 Route::post('/data-deletion', [SocialController::class, 'handleDataDeletion']);
 

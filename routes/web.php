@@ -92,6 +92,12 @@ Route::middleware([
     Route::resource('djsessions', DjsessionController::class)
     ->only(['show', 'create', 'store', 'edit', 'update', 'destroy']);
 
+    Route::get('/stripe/connect', [\App\Http\Controllers\StripeController::class, 'connect'])
+        ->name('stripe.connect');
+    Route::get('/stripe/return', function () {
+        return redirect()->route('dashboard')->with('success', 'Conexión con Stripe completada. Ya puedes recibir pagos.');
+    })->name('stripe.return');
+
     Route::get('/instagram/connect', [SocialController::class, 'connectInstagram'])
         ->name('instagram.connect');
         Route::get('/instagram/reconnect', [SocialController::class, 'reconnectInstagram'])
@@ -113,7 +119,3 @@ Route::get('/tiktok/callback', [SocialController::class, 'handleTikTokCallback']
 Route::get('/policy', function () {
     return view('policy');
 })->name('policy');
-
-
-
-

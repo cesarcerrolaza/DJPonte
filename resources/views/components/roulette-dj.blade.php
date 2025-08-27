@@ -52,7 +52,6 @@
             this.showWinner = true;
         },
 
-        // --- ¡NUEVO MÉTODO! ---
         // Resetea el estado para permitir un nuevo sorteo
         resetRaffle() {
             this.showWinner = false;    // Oculta el mensaje del ganador

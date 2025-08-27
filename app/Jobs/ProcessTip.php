@@ -53,7 +53,15 @@ class ProcessTip implements ShouldQueue
             'songId' => $tip->song_id,
         ]);
 
-        broadcast(new NewTip($tip->id, $this->status, $tip->djsession_id, $tip->user_id, $tip->amount, $donor->amount)); 
+        event(new NewTip(
+            $tip->id,         
+            $tip->djsession_id,
+            $tip->user_id,    
+            $this->status,     
+            $tip->amount,     
+            $donor->amount           
+        ));
+
     }
 }
 

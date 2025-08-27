@@ -93,7 +93,7 @@ class Raffle extends Model
     //Utilidades de participación
     public function participateApp($user_id){
         $user = User::find($user_id);
-        if ($user && $this->isOpen() && !$this->hasAppParticipant($user_id)) {
+        if ($user && $user->djsession_id === $this->djsession_id && $this->isOpen() && !$this->hasAppParticipant($user_id)) {
             $this->appParticipants()->attach($user_id);
             $this->participants_count++;
             $this->save();

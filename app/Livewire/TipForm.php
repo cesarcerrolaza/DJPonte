@@ -17,6 +17,7 @@ class TipForm extends Component
     use SongSearchable;
 
     public Djsession $djsession;
+    public $djHasStripe = false;
     public $songName = '';
     public $artistName = '';
     public $songSuggestions = [];
@@ -35,6 +36,7 @@ class TipForm extends Component
     public function mount(Djsession $djsession)
     {
         $this->djsession = $djsession;
+        $this->djHasStripe = $this->djsession->dj->stripe_account_id !== null;
         $this->lastTip = Tip::where('djsession_id', $this->djsession->id)
             ->where('status', 'paid')
             ->with('user')
@@ -55,6 +57,10 @@ class TipForm extends Component
 
     public function submit()
     {
+        if (!$this->djHasStripe) {
+            session()->flash('error', 'El DJ no ha configurado su cuenta de Stripe. No es posible procesar la propina en este momento.');
+            return;
+        }
         $this->validate($this->rules);
         $tip = Tip::create([
             'user_id'        => Auth::id(),
@@ -68,11 +74,6 @@ class TipForm extends Component
             'status'         => 'pending',
             'description'    => $this->description,
         ]);
-
-        if ($this->djsession->dj->stripe_id === null) {
-            session()->flash('error', 'El DJ no ha configurado su cuenta de Stripe. No es posible procesar la propina en este momento.');
-            return;
-        }
         // Configura la API key de Stripe
         Stripe::setApiKey(config('cashier.secret'));
         $user = Auth::user();
@@ -97,7 +98,7 @@ class TipForm extends Component
             'payment_intent_data' => [
                 'application_fee_amount' => intval($tip->amount * 0.10), // 10% de comisión
                 'transfer_data' => [
-                    'destination' => $this->djsession->dj->stripe_id,
+                    'destination' => $this->djsession->dj->stripe_account_id,
                 ],
             ],
             'metadata' => [

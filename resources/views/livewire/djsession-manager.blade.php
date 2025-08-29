@@ -126,18 +126,29 @@
         </div>
 
         <div x-show="activeTab === 'songs'" x-cloak>
+            <h3 class="text-xl font-bold mb-4 bg-gradient-to-r text-purple-600 bg-clip-text border-b-2 border-purple-300 pb-2">Peticiones de Canciones</h3>
             <livewire:song-requests :djsessionId="$djsession->id" lazy/>
         </div>
 
         <div x-show="activeTab === 'tips'" x-cloak>
+            <h3 class="text-xl font-bold mb-4 bg-gradient-to-r text-yellow-500 bg-clip-text border-b-2 border-yellow-300 pb-2">Propinas</h3>
             <livewire:top-donors :djsessionId="$djsession->id" :viewType="'management'" :key="'tips-management'"  lazy/>
             <livewire:tips-list :djsessionId="$djsession->id" lazy/>
-            <a href="{{ route('stripe.connect') }}" class="btn btn-primary">
-                Conectar con Stripe
+            <a href="{{ route('stripe.connect') }}" 
+            class="inline-block text-center bg-yellow-300 hover:bg-yellow-400 text-black font-semibold py-1 px-3 rounded-md text-sm transition-transform transform hover:scale-85"
+            :class="{ 'opacity-50': djHasStripe }" 
+            x-data="{ djHasStripe: @entangle('djHasStripe') }"
+            target="_blank"
+            >
+                {{ $djHasStripe ? 'Volver a Conectar Cuenta de Stripe' : 'Conectar Cuenta de Stripe' }}    
             </a>
+            @if (!$djHasStripe)
+                <p class="text-red-500 text-sm mt-2">No has conectado tu cuenta de Stripe. No podrás recibir propinas hasta que lo hagas.</p>
+            @endif
         </div>
 
         <div x-show="activeTab === 'raffles'" x-cloak>
+            <h3 class="text-xl font-bold mb-4 bg-gradient-to-r text-pink-600 bg-clip-text border-b-2 border-pink-300 pb-2">Sorteos</h3>
             <livewire:raffles-management :djsessionId="$djsession->id"  wire:lazy :key="'raffles-management-for-session-'.$djsession->id" lazy/>
         </div>
     </div>

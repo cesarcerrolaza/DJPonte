@@ -19,7 +19,7 @@ class StripeController extends Controller
         $user = Auth::user();
 
         // Si el usuario ya tiene una cuenta de Stripe, redirigir al dashboard
-        if ($user->stripe_id) {
+        if ($user->stripe_account_id) {
             return redirect()->route('dashboard')->with('info', 'Ya tienes una cuenta de Stripe conectada.');
         }
 
@@ -37,7 +37,7 @@ class StripeController extends Controller
         ]);
 
         // Guardar el ID de la cuenta en el usuario
-        $user->stripe_id = $account->id;
+        $user->stripe_account_id = $account->id;
         $user->save();
 
         // Crear un enlace de onboarding

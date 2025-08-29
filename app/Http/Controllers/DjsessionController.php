@@ -173,10 +173,8 @@ class DjsessionController extends Controller
             abort(403);
         }
 
-        app(DjsessionService::class)->preDelete($djsession);
+        app(DjsessionService::class)->scheduleDeletion($djsession);
         
-        // Eliminar la imagen de la sesión si existe y no es la imagen por defecto
-        DeleteDjsessionJob::dispatch($djsession)->delay(now()->addSeconds(10));
        // En tu método destroy()
         return redirect()->route('djsessions.index')
             ->with('success', 'La eliminación de la sesión ha sido programada y se completará en breve.');
@@ -219,6 +217,7 @@ class DjsessionController extends Controller
         $query = $request->input('query');
         $user = $request->user();
         $role = $user->role;
+        $currentDjsessionId = null;
         if ($role === 'dj'){
             $djsessions = Djsession::with('dj')
                         ->where('user_id', $user->id)
@@ -236,7 +235,7 @@ class DjsessionController extends Controller
                     ->orWhere('code', 'LIKE', "%$query%");
                 })
                 ->get();
-            $currentDjsessionId = $user->djsession_id ?? null;
+            $currentDjsessionId = $user->djsession_id;
         }
 
         return view('djsessions.search', compact('djsessions', 'role', 'currentDjsessionId'));

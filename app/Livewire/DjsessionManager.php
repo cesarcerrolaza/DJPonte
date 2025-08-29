@@ -13,6 +13,7 @@ class DjsessionManager extends Component
 
     //Sesion
     public $djsession;
+    public $djHasStripe = false;
     public $djsessionId;
     public $location;
     public $dj;
@@ -27,6 +28,7 @@ class DjsessionManager extends Component
     public function mount(Djsession $djsession)
     {
         $this->dj = $djsession->dj;
+        $this->djHasStripe = $this->dj->stripe_account_id !== null;
         $this->djsession = $djsession;
         $this->djsessionId = $djsession->id;
         $this->location = $djsession->fullLocation();

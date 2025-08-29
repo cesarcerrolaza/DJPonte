@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
         // Crear DJ sin djsession_id
         $dj = User::create([
             'name' => 'DjTest',
-            'email' => 'djponte.mail@gmail.com',
+            'email' => 'djtest.mail@gmail.com',
             'password' => bcrypt('12345678'),
             'role' => 'dj',
             'profile_photo_path' => 'storage/users/djtest.jpg',

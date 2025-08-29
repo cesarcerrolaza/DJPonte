@@ -55,6 +55,10 @@ Route::middleware([
         return view('loader', ['type' => 'tip','id' => $id]);
     })->name('tip.id');
 
+    Route::get('/profile', function () {
+        return view('settings');
+    })->name('profile');
+
 });
 
 Route::middleware([

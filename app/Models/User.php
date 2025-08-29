@@ -10,6 +10,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
+use App\Services\DjsessionService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -48,6 +50,8 @@ class User extends Authenticatable
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
+        'stripe_id',
+        'stripe_account_id',
     ];
 
     /**
@@ -179,6 +183,36 @@ class User extends Authenticatable
 
         // If nothing else available, return true to avoid blocking account deletion.
         return true;
+    }
+
+    /**
+     * Cambia el rol de un usuario de, eliminando los datos asociados a cada rol.
+     * La operación se envuelve en una transacción de base de datos.
+     *
+     * @return void
+     */
+    public function changeRole()
+    {
+        if ($this->role == 'dj') {
+            DB::transaction(function () {
+                $djsession = $this->djsessionActive;
+                if($djsession){
+                    app(DjsessionService::class)->deactivate($djsession);
+                }
+                $this->role = 'user';
+                $this->save();
+        });
+        }
+        else{
+            DB::transaction(function () {
+                $djsession = $this->djsessionActive;
+                if($djsession){
+                    app(DjsessionService::class)->leave($djsession, $this);
+                }
+                $this->role = 'dj';
+                $this->save();
+            });
+        }
     }
 
 

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Djsession;
 use App\Models\User;
+use App\Jobs\DeleteDjsessionJob;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
@@ -62,6 +63,12 @@ class DjsessionService
                 'active' => false
             ])
         );
+    }
+
+    public function scheduleDeletion(Djsession $djsession)
+    {
+        $this->preDelete($djsession);
+        DeleteDjsessionJob::dispatch($djsession)->delay(now()->addSeconds(10)->afterCommit());
     }
 
     public function preDelete(Djsession $djsession)

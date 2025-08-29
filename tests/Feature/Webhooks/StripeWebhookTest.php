@@ -27,7 +27,7 @@ class StripeWebhookTest extends TestCase
     {
         parent::setUp();
 
-        $this->dj = User::factory()->create(['role' => 'dj', 'stripe_id' => 'acct_test_123']);
+        $this->dj = User::factory()->create(['role' => 'dj', 'stripe_account_id' => 'acct_test_123']);
         $this->donor = User::factory()->create(['role' => 'user', 'stripe_id' => 'cus_test_123']);
         $this->djsession = Djsession::factory()->create(['user_id' => $this->dj->id, 'active' => true]);
     }

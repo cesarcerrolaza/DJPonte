@@ -1,5 +1,4 @@
 <div>
-    <h3 class="text-xl font-bold mb-4 bg-gradient-to-r text-yellow-600 bg-clip-text border-b-2 border-yellow-300 pb-2">Peticiones de Canciones</h3>
     <ul>
         @foreach($topDonors as $index => $donor)
             <li class="py-2 border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200 flex items-center">

@@ -11,7 +11,7 @@ class DjsessionSeeder extends Seeder
     public function run(): void
     {
         // Recuperar DJ
-        $dj = User::where('email', 'djponte.mail@gmail.com')->first();
+        $dj = User::where('email', 'djtest.mail@gmail.com')->first();
 
         // Crear la sesión del DJ
         $djsession = Djsession::create([

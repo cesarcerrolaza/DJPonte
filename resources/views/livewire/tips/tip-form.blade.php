@@ -99,12 +99,16 @@
                 <button 
                     type="submit"
                     class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded"
+                    :class="{ 'opacity-50 cursor-not-allowed': @this.djHasStripe === false }"
                     x-on:click="$dispatch('show-global-loader')"
                 >
                     Enviar Propina
                 </button>
             </div>
         </div>
+        @if(!$djHasStripe)
+            <p class="text-red-500 text-sm ml-4">El DJ no ha configurado su cuenta de Stripe. No es posible procesar propinas en este momento.</p>
+        @endif
     </form>
     <!-- Ranking de propinas -->
     <livewire:top-donors :djsessionId="$djsession->id" :viewType="'form'" :key="'form'" />

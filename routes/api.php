@@ -14,7 +14,7 @@ Route::get('/user', function (Request $request) {
 Route::post('/instagram/webhook', [InstagramWebhookController::class, 'handle'])
     ->middleware(VerifyFacebookSignature::class)->name('instagram.webhook');
 
-Route::get('/instagram/webhook', [InstagramWebhookController::class, 'handle'])->name('instagram.webhook');
+Route::get('/instagram/webhook', [InstagramWebhookController::class, 'handle'])->name('instagram.webhook.verify');
 
 Route::match(['get', 'post'], '/stripe/webhook',  [StripeController::class, 'handle'])->name('stripe.webhook');
 

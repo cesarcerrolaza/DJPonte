@@ -55,10 +55,15 @@ Route::middleware([
         return view('loader', ['type' => 'tip','id' => $id]);
     })->name('tip.id');
 
+});
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session')
+])->group(function () {
     Route::get('/profile', function () {
         return view('settings');
-    })->name('profile');
-
+    })->name('profile.show');
 });
 
 Route::middleware([

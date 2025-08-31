@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -19,7 +21,7 @@ use Illuminate\Support\Facades\Log;
  * @mixin \Laravel\Cashier\Billable
  * @mixin IdeHelperUser
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail, ShouldQueue
 {
     use HasApiTokens;
     use HasFactory;
@@ -217,5 +219,14 @@ class User extends Authenticatable
 
 
 
-    //------------------EVENTOS------------------//
+    //------------------NOTIFICACIONES------------------//
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new \App\Notifications\QueueableVerifyEmail);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\QueueableResetPassword($token));
+}
 }

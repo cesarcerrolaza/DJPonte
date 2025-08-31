@@ -18,9 +18,9 @@
                 <img src="{{ asset('storage/icons/djsessions.svg') }}" alt="Sesiones" class="h-8 w-8 {{ Route::is('djsessions.*') ? 'hidden' : 'block' }} group-hover:hidden">
                 <img src="{{ asset('storage/icons/djsessions-selected.svg') }}" alt="Sesiones seleccionadas" class="h-11 w-11 {{ Route::is('djsessions.*') ? 'block' : 'hidden' }} group-hover:block">
             </a>
-            <a href="/seguidos" class="p-2 relative group">
-                <img src="{{ asset('storage/icons/seguidos.svg') }}" alt="Seguidos" class="h-8 w-8 {{ request()->is('seguidos') ? 'hidden' : 'block' }} group-hover:hidden">
-                <img src="{{ asset('storage/icons/seguidos-selected.svg') }}" alt="Seguidos seleccionados" class="h-10 w-10 {{ request()->is('seguidos') ? 'block' : 'hidden' }} group-hover:block">
+            <a href="{{ route('settings') }}" class="p-2 relative group">
+                <img src="{{ asset('storage/icons/settings.svg') }}" alt="Ajustes" class="h-9 w-9 {{ request()->is('settings') ? 'hidden' : 'block' }} group-hover:hidden">
+                <img src="{{ asset('storage/icons/settings-selected.svg') }}" alt="Ajustes seleccionado" class="h-10 w-10 {{ request()->is('settings') ? 'block' : 'hidden' }} group-hover:block">
             </a>
         </div>
         

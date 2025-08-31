@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
             'email' => 'cesarcerrolaza@gmail.com',
             'password' => bcrypt('12345678'),
             'role' => 'user',
-            'profile_photo_path' => 'storage/users/default.jpg',
+            'profile_photo_path' => 'storage/users/default.png',
         ]);
     }
 }

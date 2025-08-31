@@ -50,7 +50,7 @@ class ChangeUserRoleForm extends Component
         }
 
         $this->confirmingRoleChange = false;
-        return $this->redirect(route('profile.show'), navigate: true);
+        return $this->redirect(route('settings'), navigate: true);
     }
 
     public function render()

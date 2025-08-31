@@ -10,7 +10,7 @@
                     class="w-32 h-32 md:w-40 md:h-40 object-cover rounded-xl shadow-lg ring-4 ring-purple-100"
                 >
                 <div class="flex justify-center mt-2 space-x-2">
-                    <a href="/instagram/connect" class="p-2 rounded-full bg-purple-50 hover:bg-purple-100 transition" title="Conectar Instagram">
+                    <a href="{{ route('instagram.connect')}}" class="p-2 rounded-full bg-purple-50 hover:bg-purple-100 transition" title="Conectar Instagram">
                         <img src="{{ asset('storage/icons/instagram.svg') }}" alt="Instagram" class="w-5 h-5">
                     </a>
                     <!--

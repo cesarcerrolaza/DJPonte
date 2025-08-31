@@ -32,10 +32,6 @@ Route::get('/loader', function () {
 });
 */
 
-Route::get('/djsessions/exit', function () {
-    return view('home');
-})->name('djsessions.exit');
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -61,9 +57,9 @@ Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session')
 ])->group(function () {
-    Route::get('/profile', function () {
+    Route::get('/settings', function () {
         return view('settings');
-    })->name('profile.show');
+    })->name('settings');
 });
 
 Route::middleware([
@@ -111,19 +107,14 @@ Route::middleware([
         ->name('instagram.connect');
         Route::get('/instagram/reconnect', [SocialController::class, 'reconnectInstagram'])
         ->name('instagram.reconnect');
-    Route::get('/tiktok/connect', [SocialController::class, 'connectTikTok'])
-        ->name('tiktok.connect');
 
     Route::get('/social', [SocialController::class, 'showPostGallery']) // Asegura que solo DJs logueados puedan verla
-        ->name('socialManagement');
+        ->name('social.management');
     Route::post('/set-monitored-post', [SocialController::class, 'setMonitoredPost'])
         ->name('setMonitoredPost');
 });
 Route::get('/instagram/callback', [SocialController::class, 'handleInstagramCallback'])
 ->name('instagram.callback');
-
-Route::get('/tiktok/callback', [SocialController::class, 'handleTikTokCallback'])
-->name('tiktok.callback');
 
 Route::get('/policy', function () {
     return view('policy');

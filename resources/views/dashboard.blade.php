@@ -13,74 +13,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             @auth
-                {{-- ========================================================== --}}
-                {{-- |                VISTA PARA EL ROL 'DJ'                  | --}}
-                {{-- ========================================================== --}}
                 @if (Auth::user()->role === 'dj')
-                    
-                    <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-white">Bienvenido de nuevo, {{ Auth::user()->name }}</h1>
-                        <p class="text-gray-400">Aquí tienes un resumen de tu actividad.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        
-                        {{-- Columna Principal (2/3 de ancho) --}}
-                        <div class="lg:col-span-2 space-y-8">
-                            
-                            {{-- Widget de Sesión Activa o Crear Sesión --}}
-                            <div class="bg-gray-800/80 backdrop-blur-sm shadow-lg rounded-xl p-6 border border-gray-700">
-                                @php
-                                    $activeSession = null; // Cambia esto por tu lógica real desde el controlador
-                                @endphp
-
-                                @if($activeSession)
-                                    <h2 class="text-2xl font-bold text-white mb-2">Sesión en Vivo: {{ $activeSession->name }}</h2>
-                                    <p class="text-gray-400 mb-4">Tu público está interactuando ahora mismo.</p>
-                                    <div class="flex items-center space-x-6 text-white mb-6">
-                                         {{-- ... Contadores de estadísticas ... --}}
-                                    </div>
-                                    <a href="{{-- route('djsessions.show', $activeSession->id) --}}" class="block w-full text-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition-transform transform hover:scale-105">
-                                        ▶️ Ir al Panel en Vivo
-                                    </a>
-                                @else
-                                    <h2 class="text-2xl font-bold text-white mb-2">¿Listo para empezar?</h2>
-                                    <p class="text-gray-400 mb-4">No tienes ninguna sesión activa en este momento.</p>
-                                    <a href="{{ route('djsessions.create') }}" class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-transform transform hover:scale-105">
-                                        + Crear Nueva Sesión
-                                    </a>
-                                @endif
-                            </div>
-
-                            {{-- Widget de Feed de Actividad Reciente --}}
-                            <div>
-                                 <h3 class="text-xl font-semibold text-white mb-4">Actividad Reciente</h3>
-                                 <div class="bg-gray-800/80 backdrop-blur-sm shadow-lg rounded-xl p-6 text-gray-300 border border-gray-700">
-                                     <p>Aquí se mostrarían las últimas peticiones, propinas, etc.</p>
-                                     <p class="mt-4 text-sm text-gray-500">(Placeholder para el componente Livewire de actividad)</p>
-                                 </div>
-                            </div>
-
-                        </div>
-
-                        {{-- Columna Lateral (1/3 de ancho) --}}
-                        <div class="space-y-8">
-                            {{-- Widget de Accesos Rápidos --}}
-                            <div>
-                                <h3 class="text-xl font-semibold text-white mb-4">Accesos Rápidos</h3>
-                                <div class="bg-gray-800/80 backdrop-blur-sm shadow-lg rounded-xl p-6 space-y-4 border border-gray-700">
-                                    <a href="{{ route('djsessions.index') }}" class="block text-indigo-400 hover:text-indigo-300 font-semibold">Ver todas mis sesiones</a>
-                                    <a href="{{ route('profile.show') }}" class="block text-indigo-400 hover:text-indigo-300 font-semibold">Gestionar mi perfil</a>
-                                    <a href="{{-- route('social.management') --}}" class="block text-indigo-400 hover:text-indigo-300 font-semibold">Conectar Redes Sociales</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                {{-- ========================================================== --}}
-                {{-- |              VISTA PARA EL ROL 'USER'                  | --}}
-                {{-- ========================================================== --}}
+                    {{-- Componente personalizado para el dashboard del DJ --}}
+                    <x-dj-dashboard></x-dj-dashboard>
                 @else
+                    {{-- Contenido para usuarios estándar --}}
                     <div class="min-h-[80vh] flex flex-col items-center justify-center text-center">
                         <div class="w-full max-w-lg">
                             <h1 class="text-4xl font-extrabold text-white mb-4">Únete a la Fiesta</h1>

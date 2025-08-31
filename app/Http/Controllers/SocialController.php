@@ -45,7 +45,7 @@ class SocialController extends Controller
 
         // Comprobamos si la cuenta existe y si el token sigue siendo válido.
         if ($socialAccount && $socialAccount->expires_at && Carbon::parse($socialAccount->expires_at)->isFuture()) {
-            return redirect()->route('socialManagement');
+            return redirect()->route('social.management');
         }
         
         return Socialite::driver('facebook')->scopes($this->tokenScopes)->redirect();
@@ -117,10 +117,10 @@ class SocialController extends Controller
                 }
                 catch (\Exception $e) {
                     Log::error('Excepción al suscribir al webhook: ' . $e->getMessage());
-                    return redirect()->route('socialManagement')->with('error', 'Error al suscribir al webhook de Instagram. Por favor, inténtalo de nuevo más tarde.');
+                    return redirect()->route('social.management')->with('error', 'Error al suscribir al webhook de Instagram. Por favor, inténtalo de nuevo más tarde.');
                 }
             }
-            return redirect()->route('socialManagement')->with('success', '¡Cuenta de Instagram conectada con éxito!');
+            return redirect()->route('social.management')->with('success', '¡Cuenta de Instagram conectada con éxito!');
         } catch (\Exception $e) {
             Log::error('Excepción capturada en el callback de Instagram.', [
                 'message' => $e->getMessage(),

@@ -18,6 +18,11 @@
                 <div class="mt-3 space-y-1">
                     @foreach($topSongRequests as $index => $song)
                         <div class="bg-white border-l-4 {{ $index < 3 ? ['border-yellow-400', 'border-gray-300', 'border-amber-600'][$index] : 'border-transparent' }} rounded shadow-sm p-2 flex items-center hover:bg-gray-50 transition-colors duration-200">
+                            @if ($song['status'] === 'attended')
+                                <span class="ml-1 w-5 mr-2 inline-block text-green-400">✔️</span>
+                            @elseif ($song['status'] === 'rejected')
+                                <span class="ml-1 w-5 mr-2 inline-block text-red-400">❌</span>
+                            @endif
                             @if ($index < 3)
                                 @php
                                     $textColors = [

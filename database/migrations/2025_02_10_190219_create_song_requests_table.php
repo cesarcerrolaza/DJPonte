@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('djsession_id')->constrained()->onDelete('cascade');
             $table->string('custom_title')->nullable();
             $table->string('custom_artist')->nullable();
+            $table->enum('status', ['pending', 'attended', 'rejected'])->default('pending');
             $table->float('score')->default(0);
             $table->timestamps();
         });

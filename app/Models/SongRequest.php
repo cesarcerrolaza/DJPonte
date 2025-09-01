@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Events\NewSongRequest;
+use App\Events\SongRequestStatusUpdated;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -17,6 +18,7 @@ class SongRequest extends Model
         'song_id',
         'custom_title',
         'custom_artist',
+        'status',
         'score'
     ];
     //
@@ -69,11 +71,18 @@ class SongRequest extends Model
                 ->where('song_id', $songData['songId'])
                 ->first();
             if ($songRequest) {
-                $songRequest->score += 1;
+                if ($songRequest->status === 'pending') {
+                    $songRequest->score += 1;
+                }
+                else {
+                    Log::info("La petición ya fue atendida o rechazada, no se incrementa el score.");
+                    return;
+                }
             } else {
                 $songRequest = new SongRequest([
                     'djsession_id' => $djsessionId,
                     'song_id' => $songData['songId'],
+                    'status' => 'pending',
                     'score' => 1
                 ]);
             }
@@ -97,6 +106,7 @@ class SongRequest extends Model
                         'djsession_id' => $djsessionId,
                         'custom_title' => $songData['title'],
                         'custom_artist' => $songData['artist'],
+                        'status' => 'pending',
                         'score' => 1
                     ]);
                 }
@@ -105,7 +115,15 @@ class SongRequest extends Model
         $songRequest->save();
         $songRequest->load('song');
 
-        broadcast(new NewSongRequest($songRequest));
+        broadcast(new NewSongRequest($songRequest))->toOthers();
+    }
+
+    // Cambiar el estado de la petición y emitir evento
+    public function changeStatus($status)
+    {
+        $this->status = $status;
+        $this->save();
+        broadcast(new SongRequestStatusUpdated($this, $status))->toOthers();
     }
     
 

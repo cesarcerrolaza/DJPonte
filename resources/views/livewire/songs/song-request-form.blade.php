@@ -194,9 +194,9 @@
                                     'bg-indigo-600 text-white': userVotes.includes({{ $song['id'] }}),
                                     'bg-gray-100 hover:bg-gray-200 text-gray-600': !userVotes.includes({{ $song['id'] }}) && !waiting(),
                                     'opacity-75 cursor-wait': processing,
-                                    'bg-gray-300 text-gray-500 cursor-not-allowed': waiting()
+                                    'bg-gray-300 text-gray-500 cursor-not-allowed': waiting() || '{{ $song['status'] }}' !== 'pending'
                                 }"
-                                :disabled="userVotes.includes({{ $song['id'] }}) || processing || waiting()"
+                                :disabled="userVotes.includes({{ $song['id'] }}) || processing || waiting() || '{{ $song['status'] }}' !== 'pending'"
                                 title="Votar por esta canción"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" x-bind:class="{ 'animate-pulse': processing }" fill="none" viewBox="0 0 24 24" stroke="currentColor">

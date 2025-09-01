@@ -57,10 +57,6 @@
                     <x-dropdown-link :href="route('djsessions.edit', $djsession)">
                         Editar sesión
                     </x-dropdown-link>
-
-                    <x-dropdown-button wire:click="copyUrl({{ $djsession->id }})">
-                        Duplicar sesión
-                    </x-dropdown-button>
                 </x-slot>
             </x-dropdown>
             <!-- Session Code with Modern Design -->

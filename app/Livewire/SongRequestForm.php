@@ -7,7 +7,10 @@ use App\Models\SongRequest;
 use App\Events\NewSongRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Traits\SortsSongRequests;
 use App\Livewire\SongSearchable;
+use Livewire\Attributes\On;
+
 use Illuminate\Support\Facades\Log;
 
 class SongRequestForm extends Component
@@ -18,11 +21,12 @@ class SongRequestForm extends Component
     public $songSuggestions = [];
     public $selectedSong = null;
     public $topSongs = [];
+    public $topSongsCount = 5;
     public $user = null;
     public $userLastRequestAt = null;
     public $songRequestTimeout = null;
 
-    use SongSearchable;
+    use SongSearchable, SortsSongRequests;
     
     public function mount(Request $request, $djsessionId, $songRequestTimeout)
     {
@@ -34,33 +38,32 @@ class SongRequestForm extends Component
             $this->userLastRequestAt = $this->user->last_request_at?->toIso8601String();
         }
         $this->songRequestTimeout = $songRequestTimeout;
+        $this->topSongsCount = 5;
         $this->loadTopSongs();
     }
 
     
     public function loadTopSongs()
     {
-        $this->topSongs = SongRequest::where('djsession_id', $this->djsessionId)
-            ->orderBy('score', 'desc')
-            ->take(5)
+        $songs = SongRequest::where('djsession_id', $this->djsessionId)
+            ->with('song')
             ->get()
-            ->map(function($request) {
-                $title = $request->song_id ? $request->song->title : $request->custom_title;
-                $artist = $request->song_id ? $request->song->artist : $request->custom_artist;
-                
-                return [
-                    'id' => $request->id,
-                    'title' => $title,
-                    'artist' => $artist,
-                    'score' => $request->score
-                ];
-            });
+            ->map(fn($request) => [
+                'id' => $request->id,
+                'title' => $request->song_id ? $request->song->title : $request->custom_title,
+                'artist' => $request->song_id ? $request->song->artist : $request->custom_artist,
+                'score' => $request->score,
+                'status' => $request->status,
+            ])
+            ->toArray();
+
+        $this->topSongs = $this->sortRequests($songs, $this->topSongsCount);
     }
     
     public function voteSong($songRequestId)
     {
         $songRequest = SongRequest::find($songRequestId);
-        if ($songRequest) {
+        if ($songRequest && $songRequest->status === 'pending') {
             $songRequest->score = $songRequest->score + 1;
             $songRequest->save();
             $this->user->last_request_at = now();
@@ -69,7 +72,7 @@ class SongRequestForm extends Component
 
 
 
-            broadcast(new NewSongRequest($songRequest));
+            broadcast(new NewSongRequest($songRequest))->toOthers();
             
             $this->loadTopSongs();
             $this->dispatch("song-requested", timeout: $this->songRequestTimeout);
@@ -111,6 +114,77 @@ class SongRequestForm extends Component
         // Recargar las canciones top
         $this->loadTopSongs();
     }
+
+    /**
+     * Normaliza los datos del evento y completa la información desde la BD si hace falta.
+     */
+    protected function normalizeEventData(array $eventData): array
+    {
+        $id = $eventData['id'] ?? null;
+        if (!$id) {
+            Log::warning('Evento de canción recibido sin ID', ['payload' => $eventData]);
+            return [];
+        }
+
+        $normalized = [
+            'id'     => $id,
+            'title'  => $eventData['title']  ?? null,
+            'artist' => $eventData['artist'] ?? null,
+            'score'  => $eventData['score']  ?? 0,
+            'status' => $eventData['status'] ?? 'pending',
+        ];
+
+        // Si falta información relevante, traerla desde la BD
+        if (empty($normalized['title']) || empty($normalized['artist']) || !isset($eventData['score']) || !isset($eventData['status'])) {
+            $sr = SongRequest::with('song')->find($id);
+            if ($sr) {
+                $normalized['title']  = $normalized['title']  ?? ($sr->song?->title ?? $sr->custom_title);
+                $normalized['artist'] = $normalized['artist'] ?? ($sr->song?->artist ?? $sr->custom_artist);
+                $normalized['score']  = $eventData['score']  ?? $sr->score;
+                $normalized['status'] = $eventData['status'] ?? $sr->status ?? 'pending';
+            }
+        }
+
+        return $normalized;
+    }
+
+
+    #[On('echo:song-requests,NewSongRequest')]
+    public function newRequest($eventData)
+    {
+        $entry = $this->normalizeEventData($eventData);
+        if (empty($entry)) return;
+
+        $this->topSongs = $this->topSongs ?? [];
+        $index = collect($this->topSongs)->search(fn($r) => $r['id'] == $entry['id']);
+
+        if ($index !== false) {
+            $this->topSongs[$index] = array_merge($this->topSongs[$index], $entry);
+        } else {
+            $this->topSongs[] = $entry;
+        }
+
+        $this->topSongs = $this->sortRequests($this->topSongs, $this->topSongsCount);
+    }
+
+    #[On('echo:song-requests,SongRequestStatusUpdated')]
+    public function updateRequestStatus($eventData)
+    {
+        $entry = $this->normalizeEventData($eventData);
+        if (empty($entry)) return;
+
+        $this->topSongs = $this->topSongs ?? [];
+        $index = collect($this->topSongs)->search(fn($r) => $r['id'] == $entry['id']);
+
+        if ($index !== false) {
+            $this->topSongs[$index]['status'] = $entry['status'];
+        } else {
+            $this->topSongs[] = $entry;
+        }
+
+        $this->topSongs = $this->sortRequests($this->topSongs, $this->topSongsCount);
+    }
+
     
     public function render()
     {

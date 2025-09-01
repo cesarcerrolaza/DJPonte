@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('12345678'),
             'role' => 'dj',
             'profile_photo_path' => 'storage/users/djtest.jpg',
+            'email_verified_at' => now(),
         ]);
 
         // Guardamos el DJ temporalmente en el seeder para que DjsessionSeeder lo use
@@ -28,6 +29,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('12345678'),
             'role' => 'user',
             'profile_photo_path' => 'storage/users/default.png',
+            'email_verified_at' => now(),
         ]);
     }
 }
